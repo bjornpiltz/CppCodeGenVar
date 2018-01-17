@@ -31,21 +31,21 @@ double evaluate(ConstPtr expr)
     case TypeUnaryMinus:            return -result;
     case TypeUnaryDiv:              return 1.0/result;
         
-    case TypeUnaryFunction_abs:     return abs(result);
-    case TypeUnaryFunction_log:     return log(result);
-    case TypeUnaryFunction_exp:     return exp(result);
-    case TypeUnaryFunction_sqrt:    return sqrt(result);
-    case TypeUnaryFunction_cos:     return cos(result);
-    case TypeUnaryFunction_acos:    return acos(result);
-    case TypeUnaryFunction_sin:     return sin(result);
-    case TypeUnaryFunction_asin:    return asin(result);
-    case TypeUnaryFunction_tan:     return tan(result);
-    case TypeUnaryFunction_atan:    return atan(result);
-    case TypeUnaryFunction_sinh:    return sinh(result);
-    case TypeUnaryFunction_cosh:    return cosh(result);
-    case TypeUnaryFunction_tanh:    return tanh(result);
-    case TypeUnaryFunction_floor:   return floor(result);
-    case TypeUnaryFunction_ceil:    return ceil(result);
+    case TypeUnaryFunction_abs:     return std::abs(result);
+    case TypeUnaryFunction_log:     return std::log(result);
+    case TypeUnaryFunction_exp:     return std::exp(result);
+    case TypeUnaryFunction_sqrt:    return std::sqrt(result);
+    case TypeUnaryFunction_cos:     return std::cos(result);
+    case TypeUnaryFunction_acos:    return std::acos(result);
+    case TypeUnaryFunction_sin:     return std::sin(result);
+    case TypeUnaryFunction_asin:    return std::asin(result);
+    case TypeUnaryFunction_tan:     return std::tan(result);
+    case TypeUnaryFunction_atan:    return std::atan(result);
+    case TypeUnaryFunction_sinh:    return std::sinh(result);
+    case TypeUnaryFunction_cosh:    return std::cosh(result);
+    case TypeUnaryFunction_tanh:    return std::tanh(result);
+    case TypeUnaryFunction_floor:   return std::floor(result);
+    case TypeUnaryFunction_ceil:    return std::ceil(result);
         
     case TypeTernaryMul:
         for (int i = 1; i<expr->childCount(); i++)
@@ -58,7 +58,7 @@ double evaluate(ConstPtr expr)
         return result;
     
     case TypeBinaryFunctionPow:
-        return pow(evaluate(expr->child(0)), evaluate(expr->child(1)));
+        return std::pow(evaluate(expr->child(0)), evaluate(expr->child(1)));
         
     default:
         ERROR("Unhandled case:");

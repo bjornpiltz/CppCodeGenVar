@@ -3,6 +3,7 @@
 #include "internal/AbstractExpression.h"
 #include "internal/ConstantExpression.h"
 #include "internal/VariableExpression.h"
+#include <algorithm>
 
 namespace codegenvar{
 

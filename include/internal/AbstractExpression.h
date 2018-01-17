@@ -2,6 +2,7 @@
 #include "Symbol.h"
 #include <set>
 #include <string>
+#include <memory>
 
 namespace codegenvar {
 namespace internal {

@@ -2,6 +2,7 @@
 #include "Number.h"
 #include <map>
 #include <vector>
+#include <memory>
 #include <set>
 #include <string>
 #include <iosfwd>
@@ -132,10 +133,10 @@ private:
     Symbol(std::shared_ptr<const class internal::AbstractExpression>);
     
 private:
-    friend class CodeGenerator;
-    friend class DerivateEvaluator;
-    friend class NumericalEvaluator;
-    friend class StringEvaluator;
+    friend struct CodeGenerator;
+    friend struct DerivateEvaluator;
+    friend struct NumericalEvaluator;
+    friend struct StringEvaluator;
 };
 
 }// namespace codegenvar

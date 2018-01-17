@@ -35,7 +35,7 @@ ceres::Jet<Symbol, -1> evaluate(ConstPtr expr, const std::set<std::string>& cons
             CONDITION (it != variableNames.end(), "Couldn't find variable:"+name);
             
             auto index = std::distance(variableNames.begin(), it);
-            CONDITION (index>-1 && index < variableNames.size(), "Index out of bounds.");
+            CONDITION (index>-1 && size_t(index) < variableNames.size(), "Index out of bounds.");
             
             if (it != variableNames.end())
                 infPart[index] = Symbol(1);
