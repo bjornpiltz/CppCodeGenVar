@@ -88,7 +88,7 @@ ceres::Jet<Symbol, -1> evaluate(ConstPtr expr, const std::set<std::string>& cons
 
 }// namespace derivateevaluator
 
-std::map<std::string, Symbol> DerivateEvaluator::operator()(const Symbol& symbol)
+std::map<std::string, Symbol> DerivateEvaluator::operator()(const Symbol& symbol)const
 {
     std::vector<std::string> variableNames;
     std::map<std::string, Symbol> result;
@@ -98,7 +98,7 @@ std::map<std::string, Symbol> DerivateEvaluator::operator()(const Symbol& symbol
     
     if(variableNames.empty())
         return {};
-    auto jet = derivateevaluator::evaluate(symbol.expr, constants, variableNames);
+    auto jet = derivateevaluator::evaluate(symbol.expr, options.constants, variableNames);
     
     if (jet.v.size()==0)
         return result;
@@ -106,11 +106,6 @@ std::map<std::string, Symbol> DerivateEvaluator::operator()(const Symbol& symbol
     for (int  i = 0; i< variableNames.size(); i++)
         result[variableNames[i]] = jet.v(i);
     return result;
-}
-
-void DerivateEvaluator::addConstants(const std::set<std::string>& v)
-{
-    constants.insert(v.begin(), v.end());
 }
 
 }// namespace codegenvar

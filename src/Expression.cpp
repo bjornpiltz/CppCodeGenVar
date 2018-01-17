@@ -23,7 +23,7 @@ Type Expression::type()const
 
 int Expression::childCount()const
 { 
-    return exps.size();
+    return static_cast<int>(exps.size());
 }
 
 std::set<std::string> Expression::getVariableNames()const

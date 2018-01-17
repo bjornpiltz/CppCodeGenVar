@@ -1,8 +1,5 @@
 #pragma once
 #include "Symbol.h"
-#include <string>
-#include <set>
-#include <vector>
 
 namespace codegenvar {
 

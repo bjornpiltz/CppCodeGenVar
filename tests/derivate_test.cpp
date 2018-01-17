@@ -20,7 +20,7 @@ int main()
     function(&vars[0], &vars[9], residuals);
     
     DerivateEvaluator evaluate;
-    evaluate.addConstants({"obs_x", "obs_y"});
+    evaluate.options.constants.insert({"obs_x", "obs_y"});
     
     auto dx = evaluate(residuals[0]);
     for(auto var: residuals[0].getVariableNames())

@@ -1,18 +1,16 @@
 #pragma once
 #include "Symbol.h"
-#include <string>
-#include <set>
-#include <map>
 
 namespace codegenvar{
 
 struct DerivateEvaluator
 {
-    void addConstants(const std::set<std::string>&);
-    std::map<std::string, Symbol> operator()(const Symbol&);
-    
-private:
-    std::set<std::string> constants;
+    struct Options
+    {
+        std::set<std::string> constants;
+    }options;
+
+    std::map<std::string, Symbol> operator()(const Symbol&)const;
 };
 
 }// namespace codegenvar
