@@ -5,6 +5,8 @@ namespace codegenvar {
 
 struct CodeGenerator
 {
+    CodeGenerator()=default;
+    CodeGenerator(std::string varName);
     struct Options
     {
         std::string varName = "out";

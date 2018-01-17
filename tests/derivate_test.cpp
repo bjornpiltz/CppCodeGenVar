@@ -1,6 +1,7 @@
 #include "SnavelyReprojectionError.h"
 #include "Symbol.h"
 #include "generator/DerivateGenerator.h"
+#include "generator/CodeGenerator.h"
 #include <iostream>
 
 int main()
@@ -22,14 +23,14 @@ int main()
     DerivateEvaluator evaluate;
     evaluate.options.constants.insert({"obs_x", "obs_y"});
     
-    auto dx = evaluate(residuals[0]);
+        auto dx = evaluate(residuals[0]);
     for(auto var: residuals[0].getVariableNames())
-        std::cerr << "dx/d" << var << " = " << dx[var] << std::endl << std::endl;
+        std::cerr << "dx/d" << var << " :\n" << CodeGenerator("dx_d" + var)(dx[var]) << std::endl << std::endl;
     std::cerr << std::endl;
-    
+
     auto dy = evaluate(residuals[1]);
     for(auto var: residuals[1].getVariableNames())
-        std::cerr << "dy/d" << var << " = " << dy[var] << std::endl << std::endl;
+        std::cerr << "dy/d" << var << " :\n" << CodeGenerator("dy_d" + var)(dy[var]) << std::endl << std::endl;
     
     return 0;
 }

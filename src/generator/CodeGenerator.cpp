@@ -6,130 +6,139 @@
 #include <algorithm>
 
 namespace codegenvar{
-
+    
 using namespace internal;
 
 namespace codegenerator {
 
-struct Exp
+struct Expression
 {
     std::string string;
-    std::set<std::string> vars;
+    std::set<std::string> deps;
 };
 
-void evaluate(
+Expression evaluate(
         const CodeGenerator::Options& options, 
-        const std::string& varName, 
-        std::map<std::string, Exp>& assignments, 
-        internal::ConstPtr expr)
+        std::map<std::string, Expression>& assignments,
+        internal::ConstPtr expr,
+        int& variableCounter
+    )
 {
     switch(expr->type())
     {
     case TypeConstantExpression:
     {
         std::string value = std::dynamic_pointer_cast<const ConstantExpression>(expr)->toString();
-        assignments[varName] = {value, {}};
-        return;
+        return Expression{value, {}};
     }
         
     case TypeVariableExpression: 
     {
         std::string var = std::dynamic_pointer_cast<const VariableExpression>(expr)->toString();
-        assignments[varName] = {var, {var}};
-        return;
+        return Expression{var, {var}};
     }
         
     default:
         break;
     };
     
-    static int inc = 1;//TODO: not global   
-    std::string arg1 = options.tempPrefix + std::to_string(inc++);
-    evaluate(options, arg1, assignments, expr->child(0));
-            
+    auto evalChild = [&](internal::ConstPtr expr, int childNum)
+    {
+        Expression expression = evaluate(options, assignments, expr->child(childNum), variableCounter);
+
+        if (expression.deps.empty())
+        {
+            // A constant needs no substitution.
+        }
+        else if (expression.deps.size() == 1 && *expression.deps.begin() == expression.string)
+        {
+            // A variable needs no substitution.
+        }
+        else
+        {
+            // See if we can reuse a temporary:
+            for (const auto& it: assignments)
+                if (it.second.string == expression.string)
+                {
+                    expression.string = it.first;
+                    expression.deps = it.second.deps;
+                    return expression;
+                }
+
+            // Come up with a variable name:
+            std::string varname = options.tempPrefix + std::to_string(++variableCounter);
+
+            // Substitute the expression with the name
+            assignments[varname] = expression;
+            expression.string = varname;
+            expression.deps.insert(varname);
+        }
+        return expression;
+    };
+    Expression arg1 = evalChild(expr, 0);
+
     switch(expr->type())
     {
     // The Unary operators:
-    case TypeUnaryMinus:            assignments[varName] = {     "-" + arg1,       {arg1} }; return;
-    case TypeUnaryDiv:              assignments[varName] = {  "1.0/" + arg1,       {arg1} }; return;
+    case TypeUnaryMinus:            return Expression{     "-" + arg1.string,       arg1.deps };
+    case TypeUnaryDiv:              return Expression{  "1.0/" + arg1.string,       arg1.deps };
         
     // The Unary functions:
-    case TypeUnaryFunction_abs:     assignments[varName] = {  "abs(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_log:     assignments[varName] = {  "log(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_exp:     assignments[varName] = {  "exp(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_sqrt:    assignments[varName] = { "sqrt(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_cos:     assignments[varName] = {  "cos(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_acos:    assignments[varName] = { "acos(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_sin:     assignments[varName] = {  "sin(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_asin:    assignments[varName] = { "asin(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_tan:     assignments[varName] = {  "tan(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_atan:    assignments[varName] = { "atan(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_sinh:    assignments[varName] = { "sinh(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_cosh:    assignments[varName] = { "cosh(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_tanh:    assignments[varName] = { "tanh(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_floor:   assignments[varName] = {"floor(" + arg1 + ")", {arg1} }; return;
-    case TypeUnaryFunction_ceil:    assignments[varName] = { "ceil(" + arg1 + ")", {arg1} }; return;
-        
+    case TypeUnaryFunction_abs:     return Expression{  "abs(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_log:     return Expression{  "log(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_exp:     return Expression{  "exp(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_sqrt:    return Expression{ "sqrt(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_cos:     return Expression{  "cos(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_acos:    return Expression{ "acos(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_sin:     return Expression{  "sin(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_asin:    return Expression{ "asin(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_tan:     return Expression{  "tan(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_atan:    return Expression{ "atan(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_sinh:    return Expression{ "sinh(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_cosh:    return Expression{ "cosh(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_tanh:    return Expression{ "tanh(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_floor:   return Expression{"floor(" + arg1.string + ")", arg1.deps };
+    case TypeUnaryFunction_ceil:    return Expression{ "ceil(" + arg1.string + ")", arg1.deps };
         
     // The n-ary operators:
+    
     case TypeTernaryMul:
     {
-        Exp expression;
-        expression.string = arg1;
-        expression.vars.insert(arg1);
-        for (int i = 1; i<expr->childCount(); i++)
+        Expression expression;
+        expression.string = arg1.string;
+        expression.deps = arg1.deps;
+        for (int i = 1; i < expr->childCount(); i++)
         {
-            std::string argn = options.tempPrefix + std::to_string(inc++);
-            if(expr->child(i)->type()==TypeUnaryDiv)
-            {
-                evaluate(options, arg1, assignments, expr->child(i)->child());
-                expression.string = "/"+argn;
-                expression.vars.insert(argn);
-            }
-            else
-            {
-                evaluate(options, arg1, assignments, expr->child(i));
-                expression.string = "*"+argn;
-                expression.vars.insert(argn);
-            }
+            bool isDiv = expr->child(i)->type() == TypeUnaryDiv;
+            Expression argn = isDiv ? evalChild(expr->child(i), 0) : evalChild(expr, 1);
+            expression.string += (isDiv ? "/" : "*") + argn.string;
+            expression.deps.insert(argn.deps.begin(), argn.deps.end());
         }
-        assignments[varName]  = expression;    
-        return;
+        return expression;
     }
-
+    
     case TypeTernaryPlus:
     {
-        Exp expression;
-        expression.string = arg1;
-        expression.vars.insert(arg1);
-        for (int i = 1; i<expr->childCount(); i++)
+        Expression expression;
+        expression.string = arg1.string;
+        expression.deps = arg1.deps;
+        for (int i = 1; i < expr->childCount(); i++)
         {
-            std::string argn = options.tempPrefix + std::to_string(inc++);
-            if(expr->child(i)->type()==TypeUnaryMinus)
-            {
-                evaluate(options, arg1, assignments, expr->child(i)->child());
-                expression.string = "-" + argn;
-                expression.vars.insert(argn);
-            }
-            else
-            {
-                evaluate(options, arg1, assignments, expr->child(i));
-                expression.string = "+" + argn;
-                expression.vars.insert(argn);
-            }
+            bool isNeg = expr->child(i)->type() == TypeUnaryMinus;
+            Expression argn = isNeg ? evalChild(expr->child(i), 0) : evalChild(expr, 1);
+            expression.string += (isNeg ? " - " : " + ") + argn.string;
+            expression.deps.insert(argn.deps.begin(), argn.deps.end());
         }
-        assignments[varName]  = expression;    
-        return;
+        return expression;
     }
-        
-        
+
     // The binary functions:
     case TypeBinaryFunctionPow:
     {
-        std::string arg2 = "tmp_" + std::to_string(inc++);
-        evaluate(options, arg2, assignments, expr->child(1));
-        assignments[varName] = {"pow(" + arg1 + ", " + arg2 + ")", {arg1, arg2} }; return;
-        return;
+        auto deps = arg1.deps;
+        Expression arg2 = evalChild(expr, 1);
+        deps.insert(arg2.deps.begin(), arg2.deps.end());
+        return Expression{ "pow(" + arg1.string + ", " + arg2.string + ")", deps };
     }
         
     default:
@@ -139,19 +148,25 @@ void evaluate(
 
 }// namespace codegenerator
 
+CodeGenerator::CodeGenerator(std::string varName)
+{
+    options.varName = varName;
+}
+
 std::string CodeGenerator::operator()(const Symbol& symbol)const
 {
     using namespace codegenerator;
 
     // Generate all assignments by calling the recursive evaluate():
-    std::map<std::string, Exp> assignments;
-    evaluate(options, options.varName, assignments, symbol.expr);
+    std::map<std::string, Expression> assignments;
+    int variableCounter = 0;
+    assignments[options.varName] = evaluate(options, assignments, symbol.expr, variableCounter);
     
     // Sort them in the correct order: ("y = x" must come before "z = y", since z is dependent on y)
     std::vector<std::string> keys;
     for(auto const& it: assignments)
         keys.push_back(it.first);
-    
+
     auto isDependentOn = [&](const std::string& a, const std::string& b)
     {
         std::set<std::string> stack{a};
@@ -162,7 +177,7 @@ std::string CodeGenerator::operator()(const Symbol& symbol)const
                 return true;
             stack.erase(stack.begin());
             if(assignments.count(string))
-                for (auto dependent: assignments.at(string).vars)
+                for (auto dependent: assignments.at(string).deps)
                     stack.insert(dependent);
         }
         return false;
@@ -175,7 +190,7 @@ std::string CodeGenerator::operator()(const Symbol& symbol)const
             return true;
         return a<b;
     });
-    
+
     // Format the output:
     std::string result;
     for (auto key: keys)
