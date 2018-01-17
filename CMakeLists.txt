@@ -57,3 +57,6 @@ target_link_libraries(rotation_test symbol)
 
 add_executable (derivate_test tests/derivate_test.cpp tests/SnavelyReprojectionError.h)
 target_link_libraries(derivate_test symbol)
+
+enable_testing()
+add_subdirectory(test)

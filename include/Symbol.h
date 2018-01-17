@@ -30,6 +30,7 @@ public:
     static std::vector<Symbol> variables(std::initializer_list<std::string> names);
     
     std::string toString()const;
+    double toDouble()const;
     
     Symbol resolved(const Map& symbolMap)const;
     

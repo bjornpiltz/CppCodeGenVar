@@ -72,4 +72,10 @@ double NumericalEvaluator::operator()(const Symbol& symbol)const
     return numericalevaluator::evaluate(symbol.expr);
 }
 
+double Symbol::toDouble()const
+{
+    NumericalEvaluator toDouble;
+    return toDouble(*this);
+}
+
 }// namespace codegenvar
