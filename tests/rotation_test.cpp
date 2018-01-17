@@ -1,5 +1,5 @@
 #include "SnavelyReprojectionError.h"
-#include "Symbol.h"
+#include "codegenvar/Symbol.h"
 #include <iostream>
 
 int main()

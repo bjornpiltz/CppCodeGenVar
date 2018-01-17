@@ -1,7 +1,7 @@
 #include "SnavelyReprojectionError.h"
-#include "Symbol.h"
-#include "generator/DerivateGenerator.h"
-#include "generator/CodeGenerator.h"
+#include "codegenvar/Symbol.h"
+#include "codegenvar/generator/DerivateGenerator.h"
+#include "codegenvar/generator/CodeGenerator.h"
 #include <iostream>
 
 int main()

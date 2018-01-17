@@ -1,5 +1,5 @@
 #pragma once
-#include "Symbol.h"
+#include "codegenvar/Symbol.h"
 #include <set>
 #include <string>
 #include <memory>

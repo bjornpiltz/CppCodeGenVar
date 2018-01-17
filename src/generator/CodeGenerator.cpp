@@ -1,8 +1,8 @@
-#include "generator/CodeGenerator.h"
-#include "internal/Error.h"
-#include "internal/AbstractExpression.h"
-#include "internal/ConstantExpression.h"
-#include "internal/VariableExpression.h"
+#include "codegenvar/generator/CodeGenerator.h"
+#include "codegenvar/internal/Error.h"
+#include "codegenvar/internal/AbstractExpression.h"
+#include "codegenvar/internal/ConstantExpression.h"
+#include "codegenvar/internal/VariableExpression.h"
 #include <algorithm>
 
 namespace codegenvar{

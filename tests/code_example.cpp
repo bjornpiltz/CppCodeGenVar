@@ -1,6 +1,5 @@
-#include "generator/CodeGenerator.h"
+#include "codegenvar/generator/CodeGenerator.h"
 #include <iostream>
-
 
 template <typename Scalar>
 Scalar fun(const Scalar& x, const Scalar& y, const Scalar& theta)

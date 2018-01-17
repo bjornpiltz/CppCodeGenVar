@@ -11,13 +11,13 @@ include_directories( ${EIGEN3_INCLUDE_DIR} )
 find_package(Ceres REQUIRED CONFIG)
 
 set( HDRS 
-  include/Number.h
-  include/Symbol.h
-  include/SymbolWithEigenBindings.h
-  include/generator/NumericalGenerator.h
-  include/generator/StringGenerator.h
-  include/generator/CodeGenerator.h
-  include/generator/DerivateGenerator
+  include/codegenvar/Number.h
+  include/codegenvar/Symbol.h
+  include/codegenvar/SymbolWithEigenBindings.h
+  include/codegenvar/generator/NumericalGenerator.h
+  include/codegenvar/generator/StringGenerator.h
+  include/codegenvar/generator/CodeGenerator.h
+  include/codegenvar/generator/DerivateGenerator
 )
 set(SRCS 
   src/AbstractExpression.cpp
@@ -30,11 +30,11 @@ set(SRCS
   src/generator/StringGenerator.cpp
 )
 set(INTERNALS  
-  include/internal/AbstractExpression.h
-  include/internal/ConstantExpression.h
-  include/internal/Error.h
-  include/internal/Expression.h
-  include/internal/VariableExpression.h
+  include/codegenvar/internal/AbstractExpression.h
+  include/codegenvar/internal/ConstantExpression.h
+  include/codegenvar/internal/Error.h
+  include/codegenvar/internal/Expression.h
+  include/codegenvar/internal/VariableExpression.h
 )
 
 add_library(symbol ${HDRS} ${SRCS} ${INTERNALS})

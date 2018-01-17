@@ -1,6 +1,6 @@
-#include "internal/Expression.h"
-#include "internal/Expression.h"
-#include "internal/Error.h"
+#include "codegenvar/internal/Expression.h"
+#include "codegenvar/internal/Expression.h"
+#include "codegenvar/internal/Error.h"
 
 namespace codegenvar{
 namespace internal{

@@ -1,4 +1,4 @@
-#include "SymbolWithEigenBindings.h"
+#include "codegenvar/SymbolWithEigenBindings.h"
 #include <Eigen/Geometry>
 #include <iostream>
 

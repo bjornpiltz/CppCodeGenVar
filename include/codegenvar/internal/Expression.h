@@ -1,6 +1,6 @@
 #pragma once
-#include "AbstractExpression.h"
-#include "Number.h"
+#include "codegenvar/internal/AbstractExpression.h"
+#include "codegenvar/Number.h"
 #include <memory>
 #include <set>
 #include <vector>

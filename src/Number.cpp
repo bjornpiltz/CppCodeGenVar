@@ -1,5 +1,5 @@
-#include "Number.h"
-#include "internal/Error.h"
+#include "codegenvar/Number.h"
+#include "codegenvar/internal/Error.h"
 #include <cmath>
 
 namespace codegenvar {

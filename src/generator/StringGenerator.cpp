@@ -1,8 +1,8 @@
-#include "generator/StringGenerator.h"
-#include "internal/Expression.h"
-#include "internal/ConstantExpression.h"
-#include "internal/VariableExpression.h"
-#include "internal/Error.h"
+#include "codegenvar/generator/StringGenerator.h"
+#include "codegenvar/internal/Expression.h"
+#include "codegenvar/internal/ConstantExpression.h"
+#include "codegenvar/internal/VariableExpression.h"
+#include "codegenvar/internal/Error.h"
 
 namespace codegenvar{
 
