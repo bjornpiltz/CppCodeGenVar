@@ -26,4 +26,4 @@ private:
     union {double d; long long i;}val;
 };
 
-}// namespace codegenvar {
+}// namespace codegenvar

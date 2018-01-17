@@ -7,14 +7,6 @@
 #include <string>
 #include <iosfwd>
 
-#define USE_EXPLICIT_KEYWORD 1
-
-#if USE_EXPLICIT_KEYWORD 
-#define EXPLICIT explicit
-#else
-#define EXPLICIT
-#endif
-
 namespace codegenvar {
 
 namespace internal {class AbstractExpression;}
@@ -26,11 +18,11 @@ public:
 
 public:        
     // Constructors creating constants.
-    EXPLICIT Symbol(int value);
-    EXPLICIT Symbol(long int value);
-    EXPLICIT Symbol(long long int value);
-    EXPLICIT Symbol(float value);
-    EXPLICIT Symbol(double value);
+    explicit Symbol(int value);
+    explicit Symbol(long int value);
+    explicit Symbol(long long int value);
+    explicit Symbol(float value);
+    explicit Symbol(double value);
     explicit Symbol(const Number& value);
     
     // Constructors creating variables or named constants.
@@ -85,8 +77,8 @@ public:
     friend bool operator <=(const Symbol& lhs, const Symbol& rhs);
     friend bool operator > (const Symbol& lhs, const Symbol& rhs);
     friend bool operator >=(const Symbol& lhs, const Symbol& rhs);
-    
-#if USE_EXPLICIT_KEYWORD 
+
+    // Symbol op Number and Number op Symbol overloads
     friend Symbol operator + (const Number& lhs, const Symbol& rhs);
     friend Symbol operator + (const Symbol& lhs, const Number& rhs);
     friend Symbol operator - (const Number& lhs, const Symbol& rhs);
@@ -116,7 +108,7 @@ public:
     friend bool operator <=(const Number& lhs, const Symbol& rhs);
     friend bool operator >=(const Symbol& lhs, const Number& rhs);
     friend bool operator >=(const Number& lhs, const Symbol& rhs);
-#endif
+
     friend std::ostream& operator<<(std::ostream& os, const Symbol& a);
     
 public:

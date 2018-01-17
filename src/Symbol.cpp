@@ -183,7 +183,8 @@ Symbol operator / (const Symbol& lhs, const Symbol& rhs)
         return Symbol(lhs.expr);
     return lhs * rhs.inverse();
 }
-#if USE_EXPLICIT_KEYWORD 
+
+// Symbol op Number and Number op Symbol overloads
 Symbol operator + (const Number& lhs, const Symbol& rhs){ return Symbol(lhs) + rhs;}
 Symbol operator + (const Symbol& lhs, const Number& rhs){ return lhs + Symbol(rhs);}
 Symbol operator - (const Number& lhs, const Symbol& rhs){ return Symbol(lhs) - rhs;}
@@ -215,7 +216,6 @@ bool operator <=(const Number& lhs, const Symbol& rhs){ return Symbol(lhs) <= (r
 bool operator >=(const Symbol& lhs, const Number& rhs){ return (lhs) >= Symbol(rhs); }
 bool operator >=(const Number& lhs, const Symbol& rhs){ return Symbol(lhs) >= (rhs); }
 
-#endif
 
 #define DEFINE_UNARY_FUNCTION(functionName)\
 Symbol functionName(const Symbol& value)\
