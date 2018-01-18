@@ -14,7 +14,7 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -C $<CONFIGURATION>)
 
 macro(wrap_test test_name)
     add_executable(${test_name}_test ${test_name}_test.cpp)
-    target_link_libraries(${test_name}_test gtest symbol)
+    target_link_libraries(${test_name}_test gtest CppCodeGenVar)
     add_test(${test_name}_test ${test_name}_test)
     add_dependencies(check ${test_name}_test)
 endmacro()

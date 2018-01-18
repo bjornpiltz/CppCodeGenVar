@@ -1,14 +1,11 @@
 cmake_minimum_required (VERSION 3.0)
-project(symbol C CXX)
+project(CppCodeGenVar C CXX)
 set (CMAKE_CXX_STANDARD 14)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-find_package(Eigen3 3.3 REQUIRED CONFIG)
-add_definitions(-DHAVE_EIGEN)
-include_directories( ${EIGEN3_INCLUDE_DIR} )
-
-find_package(Ceres REQUIRED CONFIG)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/eigen3)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/ceres-solver/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/ceres-solver/config)
 
 set( HDRS 
   include/codegenvar/Number.h
@@ -19,6 +16,7 @@ set( HDRS
   include/codegenvar/generator/CodeGenerator.h
   include/codegenvar/generator/DerivateGenerator
 )
+
 set(SRCS 
   src/AbstractExpression.cpp
   src/Expression.cpp
@@ -29,6 +27,7 @@ set(SRCS
   src/generator/NumericalGenerator.cpp
   src/generator/StringGenerator.cpp
 )
+
 set(INTERNALS  
   include/codegenvar/internal/AbstractExpression.h
   include/codegenvar/internal/ConstantExpression.h
@@ -37,26 +36,26 @@ set(INTERNALS
   include/codegenvar/internal/VariableExpression.h
 )
 
-add_library(symbol ${HDRS} ${SRCS} ${INTERNALS})
-target_link_libraries(symbol ceres)
+add_library(CppCodeGenVar ${HDRS} ${SRCS} ${INTERNALS})
+target_link_libraries(CppCodeGenVar)
 
 set_property( GLOBAL PROPERTY USE_FOLDERS ON)
 source_group(internal FILES ${INTERNALS})
 
 add_executable (symbol_example tests/example.cpp)
-target_link_libraries(symbol_example symbol)
+target_link_libraries(symbol_example CppCodeGenVar)
 
 add_executable (code_example tests/code_example.cpp)
-target_link_libraries(code_example symbol)
+target_link_libraries(code_example CppCodeGenVar)
 
 add_executable (eigen_test tests/eigen_test.cpp)
-target_link_libraries(eigen_test symbol)
+target_link_libraries(eigen_test CppCodeGenVar)
 
 add_executable (rotation_test tests/rotation_test.cpp tests/SnavelyReprojectionError.h)
-target_link_libraries(rotation_test symbol)
+target_link_libraries(rotation_test CppCodeGenVar)
 
 add_executable (derivate_test tests/derivate_test.cpp tests/SnavelyReprojectionError.h)
-target_link_libraries(derivate_test symbol)
+target_link_libraries(derivate_test CppCodeGenVar)
 
 enable_testing()
 add_subdirectory(test)
