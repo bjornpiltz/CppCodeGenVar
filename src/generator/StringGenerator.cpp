@@ -65,7 +65,7 @@ std::string evaluate(ConstPtr expr)
         for (int i = 1; i<expr->childCount(); i++)
         {
             if(expr->child(i)->type()==TypeUnaryDiv)
-                result += "/" + evaluateAndAddBraces(expr->child(i)->child(), expr->type());
+                result += "/" + evaluateAndAddBraces(expr->child(i)->child(), TypeUnaryDiv);
             else
                 result += "*" + evaluateAndAddBraces(expr->child(i), expr->type());
         }
@@ -75,7 +75,7 @@ std::string evaluate(ConstPtr expr)
         for (int i = 1; i<expr->childCount(); i++)
         {
             if(expr->child(i)->type()==TypeUnaryMinus)
-                result += "-" + evaluateAndAddBraces(expr->child(i)->child(), expr->type());
+                result += "-" + evaluateAndAddBraces(expr->child(i)->child(), TypeUnaryMinus);
             else
                 result += "+" + evaluateAndAddBraces(expr->child(i), expr->type());
         }

@@ -31,10 +31,10 @@ enum Type// The order of the following also defines the operators precedence
     
     TypeBinaryFunctionPow,
     
-    TypeUnaryMinus,
     TypeUnaryDiv,
-    
     TypeTernaryMul,
+
+    TypeUnaryMinus,
     TypeTernaryPlus
 };
 
