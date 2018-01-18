@@ -49,6 +49,7 @@ before_script:
   - cd $BUILD_RELEASE && cmake -DCMAKE_BUILD_TYPE=release ..
 
 script:
+    - echo "disabled for now"
   # - time make -j2 all
   # - cd $BUILD_RELEASE && make check
 
