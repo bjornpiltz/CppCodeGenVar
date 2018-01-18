@@ -8,6 +8,9 @@ add_library(gtest
   ${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/src/gtest_main.cc
 )
 
+find_package(Threads REQUIRED)
+target_link_libraries(gtest Threads::Threads)
+
 # https://cmake.org/Wiki/CMakeEmulateMakeCheck How to emulate GNU Autotools 'make check'
 find_program(CMAKE_CTEST_COMMAND ctest ${CMAKE_HOST_PATH} ${CMAKE_TARGET_PATH})
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -C $<CONFIGURATION>)
