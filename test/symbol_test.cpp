@@ -153,7 +153,7 @@ GTEST_TEST(BasicTest, unary_functions)
 #define EVALUATE_UNARY_FUNCTION(fun)\
     EXPECT_DOUBLE_EQ(fun(1.0), fun(c1).toDouble())
 
-    EXPECT_DOUBLE_EQ(fabs(1.0), abs(c1).toDouble())
+    EXPECT_DOUBLE_EQ(fabs(1.0), abs(c1).toDouble());
     EVALUATE_UNARY_FUNCTION(log);
     EVALUATE_UNARY_FUNCTION(exp);
     EVALUATE_UNARY_FUNCTION(sqrt);
