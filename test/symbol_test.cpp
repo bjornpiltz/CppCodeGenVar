@@ -69,8 +69,12 @@ GTEST_TEST(BasicTest, simplifications)
 GTEST_TEST(BasicTest, booleans)
 {
     const Symbol a("a"), b("b"), c("c");
-    EXPECT_EQ(a+b+c,  c+a+b);
-    EXPECT_NE(a+b+c,  c+a);
+
+    //Boolean logic is not supported yet.
+    EXPECT_ANY_THROW(a+b+c == a+b+c);
+    EXPECT_ANY_THROW(a+b+c != a+b+c);
+    EXPECT_ANY_THROW(a+b+c ==  c+a);
+    EXPECT_ANY_THROW(a+b+c !=  c+a);
 }
 
 GTEST_TEST(BasicTest, substitutions)

@@ -255,9 +255,9 @@ Symbol operator -(const Symbol& value)
 }
 
 // TODO: implement boolean logic.
-bool operator ==(const Symbol& lhs, const Symbol& rhs){ return true;}
-bool operator < (const Symbol& lhs, const Symbol& rhs){ return true;}
-bool operator > (const Symbol& lhs, const Symbol& rhs){ return true;}
+bool operator ==(const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
+bool operator < (const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
+bool operator > (const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
 
 bool operator !=(const Symbol& lhs, const Symbol& rhs){ return !(lhs == rhs);}
 bool operator <=(const Symbol& lhs, const Symbol& rhs){ return !(lhs  > rhs);}

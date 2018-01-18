@@ -25,7 +25,9 @@ struct SnavelyReprojectionError
         const Scalar theta2 = R.squaredNorm();
         // We only evaluate the square root if the norm of the angle_axis vector is 
         // greater than zero. Otherwise we get a division by zero.
-        if (theta2 > std::numeric_limits<double>::epsilon()) 
+
+        // TODO: implement boolean logic.
+        // if (theta2 > std::numeric_limits<double>::epsilon()) 
         {
             // Away from zero, use the rodriguez formula:
             const Scalar theta = sqrt(theta2);
