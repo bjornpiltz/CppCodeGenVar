@@ -33,6 +33,7 @@ matrix:
 env:
   global:
     - BUILD_RELEASE=${TRAVIS_BUILD_DIR}/build
+    - BUILD_COVERAGE=${TRAVIS_BUILD_DIR}/coverage
 
 before_install:
   - eval "${MATRIX_EVAL}"
@@ -50,3 +51,14 @@ before_script:
 script:
   - time make -j2 all
   - cd $BUILD_RELEASE && make check
+
+after_success:
+  # If GCC 4.8: compute code coverage and export it to coveralls
+  - if [ "$CXX" = "g++-4.8" ];
+    then
+      cd ${TRAVIS_BUILD_DIR};
+      mkdir $BUILD_COVERAGE;
+      cd $BUILD_COVERAGE;
+      cmake -DBUILD_COVERAGE=ON ..;
+      make check;
+    fi
