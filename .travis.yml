@@ -24,46 +24,6 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env:
-         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-6
-      env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-3.9
-          packages:
-            - clang-3.9
-      env:
-        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-4.0
-          packages:
-            - clang-4.0
-      env:
-        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
-        
-    - os: linux
-      addons:
-        apt:
-          sources:
             - llvm-toolchain-trusty-5.0
           packages:
             - clang-5.0
@@ -74,6 +34,12 @@ env:
   global:
     - BUILD_RELEASE=${TRAVIS_BUILD_DIR}/build
 
+before_install:
+  - if [ "$CXX" = "g++-4.8" ];
+    then
+      pip install --user cpp-coveralls
+    fi
+  
 before_script:
   - eval "${MATRIX_EVAL}"
   # Create build folder
