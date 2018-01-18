@@ -47,7 +47,7 @@ std::string evaluate(ConstPtr expr)
         
     case TypeUnaryFunction_abs:     return "abs" + result;
     case TypeUnaryFunction_log:     return "log" + result;
-    case TypeUnaryFunction_exp:     return "expr" + result;
+    case TypeUnaryFunction_exp:     return "exp" + result;
     case TypeUnaryFunction_sqrt:    return "sqrt" + result;
     case TypeUnaryFunction_cos:     return "cos" + result;
     case TypeUnaryFunction_acos:    return "acos" + result;

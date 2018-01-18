@@ -13,6 +13,7 @@ namespace numericalevaluator{
 
 double evaluate(ConstPtr expr)
 {
+    CONDITION(expr, "expr is uninitialized");
     switch(expr->type())
     {
     case TypeConstantExpression:
