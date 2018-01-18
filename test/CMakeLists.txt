@@ -12,7 +12,7 @@ find_package(Threads REQUIRED)
 target_link_libraries(gtest Threads::Threads)
 
 # https://cmake.org/Wiki/CMakeEmulateMakeCheck How to emulate GNU Autotools 'make check'
-find_program(CMAKE_CTEST_COMMAND ctest ${CMAKE_HOST_PATH} ${CMAKE_TARGET_PATH})
+find_program(CMAKE_CTEST_COMMAND ctest -V ${CMAKE_HOST_PATH} ${CMAKE_TARGET_PATH})
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -C $<CONFIGURATION>)
 
 macro(wrap_test test_name)
