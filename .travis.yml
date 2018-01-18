@@ -1,6 +1,6 @@
 # http://travis-ci.org configuration file
-language: cpp
 dist: trusty
+language: cpp
 
 compiler:
   - gcc
