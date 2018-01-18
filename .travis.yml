@@ -49,17 +49,18 @@ before_script:
   - cd $BUILD_RELEASE && cmake -DCMAKE_BUILD_TYPE=release ..
 
 script:
-  - time make -j2 all
-  - cd $BUILD_RELEASE && make check
+  # - time make -j2 all
+  # - cd $BUILD_RELEASE && make check
 
 after_success:
   # If GCC 4.8: compute code coverage and export it to coveralls
   - if [ "$CXX" = "g++-4.8" ];
     then
-      cd ${TRAVIS_BUILD_DIR};
+      cd $TRAVIS_BUILD_DIR;
       mkdir $BUILD_COVERAGE;
       cd $BUILD_COVERAGE;
       cmake -DBUILD_COVERAGE=ON ..;
       make check;
-      coveralls --exclude third_party --exclude tests --exclude test/googletest --gcov-options '\-lp';
+      cd ..;
+      coveralls -b $BUILD_COVERAGE --exclude third_party --exclude tests --exclude test/googletest --gcov-options '\-lp';
     fi
