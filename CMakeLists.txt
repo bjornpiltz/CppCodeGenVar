@@ -28,6 +28,17 @@ set(SRCS
   src/generator/StringGenerator.cpp
 )
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+	option(BUILD_COVERAGE "Enable code coverage generation (gcc only)" OFF)
+
+	IF(BUILD_COVERAGE)
+		message("Building coverage information.")
+		set(CMAKE_BUILD_TYPE "Debug")
+		add_definitions(--coverage -fprofile-arcs -ftest-coverage)
+		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+	endif()
+endif()
+
 set(INTERNALS  
   include/codegenvar/internal/AbstractExpression.h
   include/codegenvar/internal/ConstantExpression.h
