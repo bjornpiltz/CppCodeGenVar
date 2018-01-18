@@ -1,5 +1,6 @@
 #include "codegenvar/Symbol.h"
 #include <gtest/gtest.h>
+#include <cmath>
 #include <iostream>
 
 using namespace codegenvar;
@@ -150,7 +151,7 @@ GTEST_TEST(BasicTest, unary_functions)
     const Symbol c1(1.0);
 
 #define EVALUATE_UNARY_FUNCTION(fun)\
-    EXPECT_DOUBLE_EQ(std:: fun (1.0), fun(c1).toDouble())
+    EXPECT_DOUBLE_EQ(fun(1.0), fun(c1).toDouble())
 
     EVALUATE_UNARY_FUNCTION(abs);
     EVALUATE_UNARY_FUNCTION(log);
