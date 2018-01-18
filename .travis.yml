@@ -62,7 +62,6 @@ after_success:
       cd $BUILD_COVERAGE;
       cmake -DBUILD_COVERAGE=ON ..;
       make check;
-      ls;
+      cd ..;
       coveralls -b $BUILD_COVERAGE --exclude third_party --exclude tests --exclude test/googletest --gcov-options '\-lp';
-      ls;
     fi
