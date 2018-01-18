@@ -35,13 +35,13 @@ env:
     - BUILD_RELEASE=${TRAVIS_BUILD_DIR}/build
 
 before_install:
+  - eval "${MATRIX_EVAL}"
   - if [ "$CXX" = "g++-4.8" ];
     then
-      pip install --user cpp-coveralls
+      pip install --user cpp-coveralls;
     fi
   
 before_script:
-  - eval "${MATRIX_EVAL}"
   # Create build folder
   - mkdir $BUILD_RELEASE
   # Release build
