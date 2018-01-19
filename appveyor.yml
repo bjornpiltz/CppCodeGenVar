@@ -13,6 +13,9 @@ environment:
     
 clone_folder: c:\dev\src
 
+install:
+  - git submodule update --init --recursive
+  
 build_script:
   - cd c:\dev
   - mkdir build
