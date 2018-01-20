@@ -2,12 +2,18 @@ cmake_minimum_required (VERSION 3.0)
 project(CppCodeGenVar C CXX)
 set (CMAKE_CXX_STANDARD 11)
 
+option(BUILD_DOCUMENTATION "Build html documentation with Sphinx." OFF)
+#OPTION(BUILD_EXAMPLES)# TODO:
+#OPTION(BUILD_TEST)# TODO:
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/eigen3)
+
+#TODO: hide these from examples and tests
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/ceres-solver/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/ceres-solver/config)
 
-set( HDRS 
+set(HDRS 
   include/codegenvar/Number.h
   include/codegenvar/Symbol.h
   include/codegenvar/SymbolWithEigenBindings.h
@@ -52,6 +58,10 @@ target_link_libraries(CppCodeGenVar)
 
 set_property( GLOBAL PROPERTY USE_FOLDERS ON)
 source_group(internal FILES ${INTERNALS})
+
+if (BUILD_DOCUMENTATION)
+  add_subdirectory(docs)
+endif()
 
 add_executable (symbol_example tests/example.cpp)
 target_link_libraries(symbol_example CppCodeGenVar)
