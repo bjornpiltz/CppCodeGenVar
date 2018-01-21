@@ -1,4 +1,4 @@
-#include "codegenvar/SymbolWithEigenBindings.h"
+#include <codegenvar/SymbolWithEigenBindings.h>
 #include <Eigen/Geometry>
 #include <iostream>
 
@@ -8,8 +8,6 @@ int main()
 {
     const Symbol x("x"), y("y"), dx("dx"), dy("dy"), a("a");
     
-    std::cout << std::endl << "------------------------------------------------------------------------------" << std::endl;
-
     const Vec2 p(x, y);
     const Vec3 P = p.homogeneous();
     const Vec2 diff(dx, dy);
