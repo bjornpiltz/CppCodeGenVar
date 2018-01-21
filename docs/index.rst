@@ -6,7 +6,7 @@ CppCodeGenVar is an open source C++ library for mathematical symbolic computatio
 
 A very simple example of what it can do is this program:
 
-.. literalinclude:: ../tests/example.cpp
+.. literalinclude:: ../examples/symbol.cpp
 
 Which produces this output:
 

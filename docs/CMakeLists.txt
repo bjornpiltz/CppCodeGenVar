@@ -28,7 +28,7 @@ file(GLOB DOC_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
 # endforeach()
 # configure_file(${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in ${CMAKE_CURRENT_BINARY_DIR}/conf.py)
 
-add_custom_target(doc ALL
+add_custom_target(docs ALL
                  ${SPHINX_EXECUTABLE} 
                  -b html 
                  ${CMAKE_CURRENT_SOURCE_DIR}

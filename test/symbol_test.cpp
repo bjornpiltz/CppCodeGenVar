@@ -199,11 +199,12 @@ GTEST_TEST(BasicTest, booleans)
 {
     const Symbol a("a"), b("b"), c("c");
 
+    bool result = true;
     //Boolean logic is not supported yet.
-    EXPECT_ANY_THROW(a+b+c == a+b+c);
-    EXPECT_ANY_THROW(a+b+c != a+b+c);
-    EXPECT_ANY_THROW(a+b+c ==  c+a);
-    EXPECT_ANY_THROW(a+b+c !=  c+a);
+    EXPECT_ANY_THROW(result = (a+b+c == a+b+c));
+    EXPECT_ANY_THROW(result = (a+b+c != a+b+c));
+    EXPECT_ANY_THROW(result = (a+b+c ==  c+a));
+    EXPECT_ANY_THROW(result = (a+b+c !=  c+a));
 }
 
 GTEST_TEST(BasicTest, substitutions)

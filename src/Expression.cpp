@@ -1,5 +1,5 @@
-#include "codegenvar/internal/Expression.h"
-#include "codegenvar/internal/Error.h"
+#include "Expression.h"
+#include "Error.h"
 
 namespace codegenvar{
 namespace internal{
