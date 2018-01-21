@@ -2,6 +2,17 @@
 #include "Symbol.h"
 #include <Eigen/Core>
 
+namespace codegenvar
+{
+    typedef Eigen::Matrix<Symbol, Eigen::Dynamic, 1> Vec;
+    typedef Eigen::Matrix<Symbol, Eigen::Dynamic, Eigen::Dynamic> Mat;
+    typedef Eigen::Matrix<Symbol, 2, 2> Mat2;
+    typedef Eigen::Matrix<Symbol, 2, 3> Mat23;
+    typedef Eigen::Matrix<Symbol, 3, 3> Mat3;
+    typedef Eigen::Matrix<Symbol, 2, 1> Vec2;
+    typedef Eigen::Matrix<Symbol, 3, 1> Vec3;
+}
+
 // The following lets us put Symbols in Eigen matrices:
 namespace Eigen
 {

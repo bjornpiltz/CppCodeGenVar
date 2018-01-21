@@ -1,6 +1,6 @@
 #pragma once
-#include "codegenvar/internal/AbstractExpression.h"
-#include "codegenvar/internal/ConstantExpression.h"
+#include "AbstractExpression.h"
+#include "ConstantExpression.h"
 
 namespace codegenvar{
 namespace internal {
