@@ -23,6 +23,5 @@ its `GitHub Site
    :hidden:
    
    tutorial
-   features
    installation
    license
