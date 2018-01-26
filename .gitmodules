@@ -1,9 +1,6 @@
 [submodule "test/googletest"]
-	path = test/googletest
+	path = third_party/googletest
 	url = https://github.com/google/googletest/
 [submodule "third_party/eigen3"]
 	path = third_party/eigen3
 	url = https://github.com/eigenteam/eigen-git-mirror
-[submodule "third_party/ceres-solver"]
-	path = third_party/ceres-solver
-	url = https://github.com/ceres-solver/ceres-solver

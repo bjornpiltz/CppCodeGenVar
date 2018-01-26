@@ -7,17 +7,18 @@ find_program(SPHINX_EXECUTABLE
 set(SPHINX_HTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/html")
 
 # Install documentation
-#TODO
-#install(DIRECTORY ${SPHINX_HTML_DIR}
-#        DESTINATION ...
-#        COMPONENT Doc
-#        PATTERN "${SPHINX_HTML_DIR}/*")
+install(DIRECTORY ${SPHINX_HTML_DIR}
+        DESTINATION docs
+        COMPONENT Doc
+        PATTERN "${SPHINX_HTML_DIR}/*")
 
 # Build examples
 add_custom_target(run_examples ALL
     COMMAND symbol_example > docs/symbol_example.txt
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/..
 )
+add_dependencies(run_examples examples)
+set_target_properties(run_examples PROPERTIES FOLDER "CMake Targets")
 
 file(GLOB DOC_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.rst")
@@ -37,3 +38,4 @@ add_custom_target(docs ALL
                  SOURCES ${DOC_SOURCES}
                  DEPENDS run_examples
 )
+set_target_properties(docs PROPERTIES FOLDER "CMake Targets")

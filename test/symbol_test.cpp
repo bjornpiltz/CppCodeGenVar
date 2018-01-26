@@ -1,18 +1,29 @@
-#include "codegenvar/Symbol.h"
+#include <codegenvar/Symbol.h>
 #include <gtest/gtest.h>
 #include <cmath>
 #include <iostream>
 
 using namespace codegenvar;
+inline std::string wo_ws(std::string a)
+{
+    std::string b(a);
+    for (auto it = b.begin(); it != b.end(); )
+        if (std::iswspace(*it))
+            it = b.erase(it);
+        else
+            it++;
+    return b;
+}
 
-#define COMPARE( a, result) EXPECT_EQ(result, (a).toString())
+#define COMPARE( a, result) EXPECT_EQ(wo_ws(result), wo_ws((a).toString()))
 
 GTEST_TEST(BasicTest, ctors_and_assignment)
 {
     // Test a default constructed object:
     Symbol a;
-    EXPECT_EQ(a.toString(), "");
-    EXPECT_ANY_THROW(a.toDouble());
+    EXPECT_EQ(a.toString(), "0");
+    EXPECT_EQ((a+a).toString(), "0");
+    EXPECT_DOUBLE_EQ(a.toDouble(), 0.0);
 
     // Test empty assignments:
     a = Symbol();
@@ -20,7 +31,7 @@ GTEST_TEST(BasicTest, ctors_and_assignment)
     
     // Test copy constructor:
     Symbol b(a);
-    EXPECT_EQ(b.toString(), "");
+    EXPECT_EQ(b.toString(), "0");
 
     // Test assignments:
     b = Symbol("b");
@@ -30,11 +41,11 @@ GTEST_TEST(BasicTest, ctors_and_assignment)
     c = Symbol("c");
 
     // Check aliasing:
-    EXPECT_EQ(a.toString(), "");
+    EXPECT_EQ(a.toString(), "0");
     EXPECT_EQ(b.toString(), "b");
     EXPECT_EQ(c.toString(), "c");
 
-    auto vars = Symbol::variables({ "x", "y", "z" });
+    Symbol vars[3] = { Symbol("x"), Symbol("y"), Symbol("z") };
     EXPECT_EQ(vars[0].toString(), "x");
     EXPECT_EQ(vars[1].toString(), "y");
     EXPECT_EQ(vars[2].toString(), "z");
@@ -58,8 +69,8 @@ GTEST_TEST(BasicTest, ctors_and_assignment)
     EXPECT_EQ(var_i.toString(), "1");
     EXPECT_EQ(var_li.toString(), "2");
     EXPECT_EQ(var_lli.toString(), "3");
-    EXPECT_EQ(var_f.toString(), "4.000000");
-    EXPECT_EQ(var_d.toString(), "-8.000000");
+    EXPECT_EQ(var_f.toString(), "4.0");
+    EXPECT_EQ(var_d.toString(), "-8.0");
     
     // Test getVariableNames();
     EXPECT_TRUE(var_i.getVariableNames().empty());
@@ -68,8 +79,8 @@ GTEST_TEST(BasicTest, ctors_and_assignment)
     EXPECT_TRUE(var_f.getVariableNames().empty());
     EXPECT_TRUE(var_d.getVariableNames().empty());
 
-    EXPECT_TRUE(c.getVariableNames().size()==1 &&
-               *c.getVariableNames().begin()== "c");
+    EXPECT_EQ(c.getVariableNames().size(), 1);
+    EXPECT_EQ(*c.getVariableNames().begin(), "c");
 
     // TODO: plus assignments, etc
 }
@@ -88,16 +99,16 @@ GTEST_TEST(BasicTest, simple_expressions)
     COMPARE(d, "d");
     COMPARE(Symbol(1), "1");
     COMPARE(C3, "3");
-    COMPARE(C3_0, "3.000000");
-    COMPARE(a + c, "a+c");
-    COMPARE(a + c*b, "a+c*b");
-    COMPARE(a + b*c + d, "a+b*c+d");
-    COMPARE((a+b) * (c+d), "(a+b)*(c+d)");
+    COMPARE(C3_0, "3.0");
+    COMPARE(a + c, "a + c");
+    COMPARE(a + c*b, "a + b*c");
+    COMPARE(a + b*c + d, "a + d + b*c");
+    COMPARE((a+b) * (c+d), "(a + b)*(c + d)");
 
-    COMPARE(a + (b + c + d), "a+b+c+d");
-    COMPARE((a + b) + (c + d), "a+b+c+d");
-    COMPARE((a + b + c) + d, "a+b+c+d");
-    COMPARE(a + b + c + d, "a+b+c+d");
+    COMPARE(a + (b + c + d), "a + b + c + d");
+    COMPARE((a + b) + (c + d), "a + b + c + d");
+    COMPARE((a + b + c) + d, "a + b + c + d");
+    COMPARE(a + b + c + d, "a + b + c + d");
     
     COMPARE(a * (b * c * d), "a*b*c*d");
     COMPARE((a * b) * (c * d), "a*b*c*d");
@@ -105,23 +116,24 @@ GTEST_TEST(BasicTest, simple_expressions)
     COMPARE(a * b * c * d, "a*b*c*d");
     
     COMPARE(1/a, "1/a");
+
     COMPARE(3/a, "3/a");
     COMPARE(cos(a), "cos(a)");
-    COMPARE(cos(a + c), "cos(a+c)");
-    COMPARE(cos(a + c), "cos(a+c)");
+    COMPARE(cos(a + c), "cos(a + c)");
+    COMPARE(cos(a + c), "cos(a + c)");
     COMPARE(pow(a, c), "pow(a,c)");
     COMPARE(pow(a, 2), "pow(a,2)");
     COMPARE(pow(a, 2*b), "pow(a,2*b)");
-    COMPARE(pow(a, 2*b)+c, "pow(a,2*b)+c");
+    COMPARE(pow(a, 2*b)+c, "c + pow(a,2*b)");
     COMPARE(-pow(a, 2), "-pow(a,2)");
-    COMPARE(pow(-a, 2), "pow(-a,2)");
+    COMPARE(pow(-a, 2), "pow(a,2)");
     COMPARE(-sin(a), "-sin(a)");
     
     COMPARE(a+(b-c), "a+b-c");
     COMPARE(a+b-c, "a+b-c");
     COMPARE(a-(b-c), "a-(b-c)");
     COMPARE(a/(b*c), "a/(b*c)");
-    COMPARE(a/(b/c), "a/(b/c)");
+    COMPARE(a/(b/c), "a*c/b");
     COMPARE(a*(b/c), "a*b/c");
     COMPARE(a*(b-c), "a*(b-c)");
     COMPARE(a-b*c, "a-b*c");
@@ -145,8 +157,9 @@ GTEST_TEST(BasicTest, unary_functions)
     COMPARE(cosh(x), "cosh(x)");
     COMPARE(tanh(x), "tanh(x)");
     COMPARE(floor(x), "floor(x)");
+    auto ii = ceil(x);
+    ii.toString();
     COMPARE(ceil(x), "ceil(x)");
-
     
     const Symbol c1(1.0);
 
@@ -168,11 +181,23 @@ GTEST_TEST(BasicTest, unary_functions)
     EVALUATE_UNARY_FUNCTION(tanh);
     EVALUATE_UNARY_FUNCTION(floor);
     EVALUATE_UNARY_FUNCTION(ceil);
-
 }
-GTEST_TEST(BasicTest, simplifications)
+
+GTEST_TEST(BasicTest, pow)
 {
     const Symbol a("a"), b("b"), c("c"), C1(1);
+    
+    COMPARE(pow(a, 0), "1");
+    COMPARE(pow(a, 1), "a");
+    COMPARE(pow(a*b + c, -1), "1/(c + a*b)");
+    COMPARE(pow(a*b, -1), "1/(a*b)");
+    COMPARE(pow(a/b, -1), "b/a");
+    COMPARE(pow(a, 2), "pow(a, 2)");
+}
+
+GTEST_TEST(BasicTest, simplifications)
+{
+    const Symbol a("a"), b("b"), C1(1);
     
     COMPARE(-(-a), "a");
     COMPARE(a+-b, "a-b");

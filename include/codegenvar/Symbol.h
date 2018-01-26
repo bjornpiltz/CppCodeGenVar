@@ -1,7 +1,6 @@
 #pragma once
-#include "Number.h"
+#include "Scalar.h"
 #include <map>
-#include <vector>
 #include <memory>
 #include <set>
 #include <string>
@@ -9,12 +8,12 @@
 
 namespace codegenvar {
 
-namespace internal {class AbstractExpression;}
+namespace internal {class SymbolPrivate;}
 
 class Symbol
 {
 public:        
-    typedef std::map<std::string, Number> Map;
+    typedef std::map<std::string, Scalar> Map;
 
 public:        
     // Constructors creating constants.
@@ -23,11 +22,10 @@ public:
     explicit Symbol(long long int value);
     explicit Symbol(float value);
     explicit Symbol(double value);
-    explicit Symbol(const Number& value);
+    explicit Symbol(const Scalar& value);
     
     // Constructors creating variables or named constants.
     explicit Symbol(const std::string&);
-    static std::vector<Symbol> variables(std::initializer_list<std::string> names);
     
     std::string toString()const;
     double toDouble()const;
@@ -79,51 +77,51 @@ public:
     friend bool operator > (const Symbol& lhs, const Symbol& rhs);
     friend bool operator >=(const Symbol& lhs, const Symbol& rhs);
 
-    // Symbol op Number and Number op Symbol overloads
-    friend Symbol operator + (const Number& lhs, const Symbol& rhs);
-    friend Symbol operator + (const Symbol& lhs, const Number& rhs);
-    friend Symbol operator - (const Number& lhs, const Symbol& rhs);
-    friend Symbol operator - (const Symbol& lhs, const Number& rhs);
-    friend Symbol operator * (const Number& lhs, const Symbol& rhs);
-    friend Symbol operator * (const Symbol& lhs, const Number& rhs);
-    friend Symbol operator / (const Number& lhs, const Symbol& rhs);
-    friend Symbol operator / (const Symbol& lhs, const Number& rhs);
+    // Symbol op Scalar and Scalar op Symbol overloads
+    friend Symbol operator + (const Scalar& lhs, const Symbol& rhs);
+    friend Symbol operator + (const Symbol& lhs, const Scalar& rhs);
+    friend Symbol operator - (const Scalar& lhs, const Symbol& rhs);
+    friend Symbol operator - (const Symbol& lhs, const Scalar& rhs);
+    friend Symbol operator * (const Scalar& lhs, const Symbol& rhs);
+    friend Symbol operator * (const Symbol& lhs, const Scalar& rhs);
+    friend Symbol operator / (const Scalar& lhs, const Symbol& rhs);
+    friend Symbol operator / (const Symbol& lhs, const Scalar& rhs);
     
-    Symbol& operator=(const Number& other);
-    Symbol& operator+=(const Number& other);
-    Symbol& operator-=(const Number& other);
-    Symbol& operator*=(const Number& other);    
-    Symbol& operator/=(const Number& other);
+    Symbol& operator=(const Scalar& other);
+    Symbol& operator+=(const Scalar& other);
+    Symbol& operator-=(const Scalar& other);
+    Symbol& operator*=(const Scalar& other);    
+    Symbol& operator/=(const Scalar& other);
 
-    friend Symbol pow(const Symbol&, const Number&);
+    friend Symbol pow(const Symbol&, const Scalar&);
     
-    friend bool operator ==(const Symbol& lhs, const Number& rhs);
-    friend bool operator ==(const Number& lhs, const Symbol& rhs);
-    friend bool operator < (const Symbol& lhs, const Number& rhs);
-    friend bool operator < (const Number& lhs, const Symbol& rhs);
-    friend bool operator > (const Symbol& lhs, const Number& rhs);
-    friend bool operator > (const Number& lhs, const Symbol& rhs);
-    friend bool operator !=(const Symbol& lhs, const Number& rhs);
-    friend bool operator !=(const Number& lhs, const Symbol& rhs);
-    friend bool operator <=(const Symbol& lhs, const Number& rhs);
-    friend bool operator <=(const Number& lhs, const Symbol& rhs);
-    friend bool operator >=(const Symbol& lhs, const Number& rhs);
-    friend bool operator >=(const Number& lhs, const Symbol& rhs);
+    friend bool operator ==(const Symbol& lhs, const Scalar& rhs);
+    friend bool operator ==(const Scalar& lhs, const Symbol& rhs);
+    friend bool operator < (const Symbol& lhs, const Scalar& rhs);
+    friend bool operator < (const Scalar& lhs, const Symbol& rhs);
+    friend bool operator > (const Symbol& lhs, const Scalar& rhs);
+    friend bool operator > (const Scalar& lhs, const Symbol& rhs);
+    friend bool operator !=(const Symbol& lhs, const Scalar& rhs);
+    friend bool operator !=(const Scalar& lhs, const Symbol& rhs);
+    friend bool operator <=(const Symbol& lhs, const Scalar& rhs);
+    friend bool operator <=(const Scalar& lhs, const Symbol& rhs);
+    friend bool operator >=(const Symbol& lhs, const Scalar& rhs);
+    friend bool operator >=(const Scalar& lhs, const Symbol& rhs);
 
     friend std::ostream& operator<<(std::ostream& os, const Symbol& a);
     
 public:
-    Symbol()=default;
-    Symbol(const Symbol&)= default;
-    Symbol(Symbol&&)=default;
-    Symbol& operator=(const Symbol&)= default;
-    Symbol& operator=(Symbol&&)= default;
+    Symbol();
+    ~Symbol();
+    Symbol(const Symbol&);
+    Symbol(Symbol&&);
+    Symbol& operator=(const Symbol&);
+    Symbol& operator=(Symbol&&);
     void swap(Symbol& other);
 
 private:
-    // The data pointer:
-    std::shared_ptr<const class internal::AbstractExpression> expr;
-    Symbol(std::shared_ptr<const class internal::AbstractExpression>);
+    friend class internal::SymbolPrivate;
+    std::unique_ptr<class internal::SymbolPrivate> p;
     
 private:
     friend struct CodeGenerator;

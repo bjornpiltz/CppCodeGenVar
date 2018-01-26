@@ -1,1 +1,1 @@
-sqrt(a+b*c)*pow(b,2)/c
+pow(b, 2)*sqrt(a + b*c)/c

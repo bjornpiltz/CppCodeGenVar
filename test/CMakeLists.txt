@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 
 # Add the gtest library
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest)
+include_directories(${PROJECT_SRC_DIR}/third_party/googletest/googletest/include)
+include_directories(${PROJECT_SRC_DIR}/third_party/googletest/googletest)
 add_library(gtest 
-  ${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/src/gtest-all.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/src/gtest_main.cc
+  ${PROJECT_SRC_DIR}/third_party/googletest/googletest/src/gtest-all.cc
+  ${PROJECT_SRC_DIR}/third_party/googletest/googletest/src/gtest_main.cc
 )
 
 find_package(Threads REQUIRED)

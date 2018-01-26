@@ -1,36 +1,32 @@
 cmake_minimum_required (VERSION 3.0)
+find_package(symengine REQUIRED)
+include_directories(${SYMENGINE_INCLUDE_DIRS}) 
 
 set(HDRS 
-  ${PROJECT_SRC_DIR}/include/codegenvar/Number.h
+  ${PROJECT_SRC_DIR}/include/codegenvar/Scalar.h
   ${PROJECT_SRC_DIR}/include/codegenvar/Symbol.h
   ${PROJECT_SRC_DIR}/include/codegenvar/SymbolWithEigenBindings.h
-  ${PROJECT_SRC_DIR}/include/codegenvar/generator/NumericalGenerator.h
   ${PROJECT_SRC_DIR}/include/codegenvar/generator/StringGenerator.h
   ${PROJECT_SRC_DIR}/include/codegenvar/generator/CodeGenerator.h
   ${PROJECT_SRC_DIR}/include/codegenvar/generator/DerivateGenerator.h
 )
 
 set(SRCS 
-  ${PROJECT_SRC_DIR}/src/AbstractExpression.cpp
-  ${PROJECT_SRC_DIR}/src/Expression.cpp
-  ${PROJECT_SRC_DIR}/src/Number.cpp 
+  ${PROJECT_SRC_DIR}/src/Scalar.cpp 
   ${PROJECT_SRC_DIR}/src/Symbol.cpp 
   ${PROJECT_SRC_DIR}/src/generator/CodeGenerator.cpp
   ${PROJECT_SRC_DIR}/src/generator/DerivateGenerator.cpp
-  ${PROJECT_SRC_DIR}/src/generator/NumericalGenerator.cpp
   ${PROJECT_SRC_DIR}/src/generator/StringGenerator.cpp
 )
 
 set(INTERNALS  
-  AbstractExpression.h
-  ConstantExpression.h
   Error.h
-  Expression.h
-  VariableExpression.h
+  SymbolPrivate.h
 )
 source_group(internal FILES ${INTERNALS})
 
 add_library(CppCodeGenVar STATIC ${HDRS} ${SRCS} ${INTERNALS})
+target_link_libraries(CppCodeGenVar ${SYMENGINE_LIBRARIES})
 target_include_directories(CppCodeGenVar 
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SRC_DIR}/include>

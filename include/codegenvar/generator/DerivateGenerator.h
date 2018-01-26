@@ -1,5 +1,5 @@
 #pragma once
-#include "codegenvar/Symbol.h"
+#include <codegenvar/Symbol.h>
 
 namespace codegenvar{
 
