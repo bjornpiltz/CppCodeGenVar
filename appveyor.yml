@@ -1,12 +1,19 @@
 version: 1.0.{build}
 
+matrix:
+  fast_finish: false # set this flag to immediately finish build once one of the jobs fails.
+
 environment:
   matrix:
     - GENERATOR: "Visual Studio 14 2015 Win64"
+      PLATFORM: x64
     - GENERATOR: "Visual Studio 14 2015"
+      PLATFORM: x86
     - GENERATOR: "Visual Studio 15 2017 Win64"
+      PLATFORM: x64
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     - GENERATOR: "Visual Studio 15 2017"
+      PLATFORM: x86
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     
 clone_folder: c:\dev\src
@@ -20,7 +27,9 @@ before_build:
 
 build_script:
   - cd c:\dev
+  - curl http://blikken.de/pub/symengine_0.3.3_1a797b3_msvc_15.3_%PLATFORM%.zip  -o symengine_0.3.3_1a797b3_msvc_15.3_%PLATFORM%.zip
+  - 7z x symengine_0.3.3_1a797b3_msvc_15.3_%PLATFORM%.zip -oc:\dev\install%PLATFORM%
   - mkdir build
   - cd build
-  - cmake -G"%GENERATOR%" ../src
+  - cmake -G"%GENERATOR%" -DCMAKE_PREFIX_PATH=c:/dev/install%PLATFORM% ../src
   - cmake --build . --config Release --target check

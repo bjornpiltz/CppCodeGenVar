@@ -54,6 +54,5 @@ int main()
     std::cout << "R*T = " << std::endl << R*T << std::endl << std::endl;
     std::cout << "R*T*P = " << (R*T*P).transpose() << std::endl << std::endl;
 
-
     return 0;
 }

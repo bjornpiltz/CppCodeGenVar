@@ -1,18 +1,20 @@
 cmake_minimum_required (VERSION 3.0)
 
-add_executable (symbol_example symbol.cpp)
-target_link_libraries(symbol_example CppCodeGenVar)
+# Add an artifical target that builds all examples
+add_custom_target(examples)
+set_target_properties(examples PROPERTIES FOLDER "CMake Targets")
 
-add_executable (code_example code.cpp)
-target_link_libraries(code_example CppCodeGenVar)
+macro(add_example example_name)
+    add_executable(${example_name}_example ${example_name}.cpp)
+    set_target_properties(${example_name}_example PROPERTIES FOLDER "Examples")
+    target_link_libraries(${example_name}_example CppCodeGenVar)
+    add_dependencies(examples ${example_name}_example)
+endmacro()
 
 include_directories(${PROJECT_SRC_DIR}/third_party/eigen3)
 
-add_executable (eigen_example eigen.cpp)
-target_link_libraries(eigen_example CppCodeGenVar)
-
-add_executable (rotation_example rotation.cpp SnavelyReprojectionError.h)
-target_link_libraries(rotation_example CppCodeGenVar)
-
-add_executable (derivate_example derivate.cpp SnavelyReprojectionError.h)
-target_link_libraries(derivate_example CppCodeGenVar)
+add_example(symbol)
+add_example(code)
+add_example(eigen)
+add_example(rotation)
+add_example(derivate)

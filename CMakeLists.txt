@@ -15,6 +15,7 @@ option(BUILD_EXAMPLES "Build the examples" ON)
 
 set(CMAKE_DEBUG_POSTFIX "d")
 set_property( GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake Targets")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
   option(BUILD_COVERAGE "Enable code coverage generation (gcc only)" OFF)
