@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.0)
-find_package(symengine REQUIRED)
+find_package(SymEngine CONFIG REQUIRED)
 include_directories(${SYMENGINE_INCLUDE_DIRS}) 
 
 set(HDRS 
