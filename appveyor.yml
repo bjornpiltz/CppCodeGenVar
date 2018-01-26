@@ -24,7 +24,7 @@ before_build:
 
 build_script:
   - cd c:\dev
-  - curl http://blikken.de/pub/symengine_0.3.3_1a797b3_msvc_15.3_%PLATFORM%.zip 
+  - curl http://blikken.de/pub/symengine_0.3.3_1a797b3_msvc_15.3_%PLATFORM%.zip  -o symengine_0.3.3_1a797b3_msvc_15.3_%PLATFORM%.zip
   - 7z x symengine_0.3.3_1a797b3_msvc_15.3_%PLATFORM%.zip -oc:\dev\install%PLATFORM%
   - mkdir build
   - cd build
