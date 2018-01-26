@@ -20,7 +20,14 @@ before_build:
 
 build_script:
   - cd c:\dev
+  - mkdir build_symengine
+  - cd build_symengine
+  - git clone --depth 1 https://github.com/symengine/symengine
+  - cd symengine
+  - cmake .  -G"%GENERATOR%" -DCMAKE_INSTALL_PREFIX=c:/dev/install -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF
+  - cmake --build . --config Release --target install
+  - cd C:\dev
   - mkdir build
   - cd build
-  - cmake -G"%GENERATOR%" ../src
+  - cmake -G"%GENERATOR%" -DCMAKE_PREFIX_PATH=c:/dev/install ../src
   - cmake --build . --config Release --target check
