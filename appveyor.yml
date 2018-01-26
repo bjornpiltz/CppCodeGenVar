@@ -1,5 +1,8 @@
 version: 1.0.{build}
 
+matrix:
+  fast_finish: false # set this flag to immediately finish build once one of the jobs fails.
+
 environment:
   matrix:
     - GENERATOR: "Visual Studio 14 2015 Win64"
