@@ -2,13 +2,14 @@
 #include <gtest/gtest.h>
 #include <cmath>
 #include <iostream>
+#include <cctype>
 
 using namespace codegenvar;
 inline std::string wo_ws(std::string a)
 {
     std::string b(a);
     for (auto it = b.begin(); it != b.end(); )
-        if (std::iswspace(*it))
+        if (std::isspace(*it))
             it = b.erase(it);
         else
             it++;

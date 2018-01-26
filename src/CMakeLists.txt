@@ -38,6 +38,7 @@ target_include_directories(CppCodeGenVar
     ${PROJECT_SRC_DIR}/third_party/ceres-solver/include
     ${PROJECT_SRC_DIR}/third_party/ceres-solver/config
 )
+set_target_properties(CppCodeGenVar PROPERTIES FOLDER "Libraries")
   
 # Enable PIC, so shared libraries can link against it CppCodeGenVar.
 set_target_properties(CppCodeGenVar PROPERTIES POSITION_INDEPENDENT_CODE ON)

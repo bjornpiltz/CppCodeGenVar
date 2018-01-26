@@ -13,6 +13,8 @@ using SymEngine::rational;
 using SymEngine::integer;
 using SymEngine::PrecedenceEnum;
 using SymEngine::FunctionSymbol;
+using SymEngine::Function;
+using SymEngine::Basic;
 
 // The purpose of this class is to replace some naming conventions
 // unusual to coders, like a**x -> pow(a, x).
@@ -42,6 +44,15 @@ public:
             name = "ceil";
         std::ostringstream o;
         o << name << "(" << this->apply(x.get_args()) << ")";
+        str_ = o.str();
+    }
+    void bvisit(const Function &x)
+    {
+        auto name = names_[x.get_type_code()];
+        if (name == "ceiling")
+            name = "ceil";
+        std::ostringstream o;
+        o << name << "("  << this->apply(x.get_args()) << ")";
         str_ = o.str();
     }
 };
