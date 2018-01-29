@@ -10,7 +10,7 @@ struct CodeGenerator
     struct Options
     {
         std::string varName = "out";
-        std::string varDeclaration = "const double ";
+        std::string varDeclaration = "const double";
         std::string tempPrefix = "tmp_";
     }options;
     

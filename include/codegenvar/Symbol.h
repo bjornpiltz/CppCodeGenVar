@@ -28,6 +28,7 @@ public:
     explicit Symbol(const std::string&);
     
     std::string toString()const;
+    std::string toCode()const;
     double toDouble()const;
     
     Symbol resolved(const Map& symbolMap)const;

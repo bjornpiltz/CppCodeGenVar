@@ -14,6 +14,9 @@ int main()
     Symbol z = fun(x, y, theta);
     
     CodeGenerator generate;
+    generate.options.varDeclaration  = "float";
+    generate.options.tempPrefix  = "v";
+    generate.options.varName  = "z";
     
     std::cerr << generate(Symbol(2)) << std::endl;
     std::cerr << generate(y) << std::endl;
@@ -22,6 +25,7 @@ int main()
     std::cerr << generate(cos(1/y)) << std::endl;
     std::cerr << generate(pow(cos(1/y), 3)) << std::endl;
     std::cerr << generate(z) << std::endl;
+    std::cerr << generate(Symbol(2.0)) << std::endl;
     
     return 0;
 }
