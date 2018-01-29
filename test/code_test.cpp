@@ -1,5 +1,6 @@
 #include <codegenvar/Symbol.h>
 #include <gtest/gtest.h>  
+#include <cctype>
 
 using codegenvar::Symbol;
 
