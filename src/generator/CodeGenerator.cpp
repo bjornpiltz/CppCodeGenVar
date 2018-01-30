@@ -47,6 +47,8 @@ public:
         std::ostringstream o2;
         if (eq(*b, *rational(1, 2))) {
             o2 << "sqrt(" << apply(a) << ")";
+        } else  if (eq(*b, *integer(-1))) {
+            o2 << "1/" << apply(a);
         } else {
             o2 << "pow(" << apply(a) << ", " << apply(b) << ")";
         }

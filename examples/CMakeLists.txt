@@ -13,8 +13,9 @@ endmacro()
 
 include_directories(${PROJECT_SRC_DIR}/third_party/eigen3)
 
-add_example(symbol)
+add_example(derivate)
 add_example(code)
 add_example(eigen)
+add_example(rodrigues)
 add_example(rotation)
-add_example(derivate)
+add_example(symbol)

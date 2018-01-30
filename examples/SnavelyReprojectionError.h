@@ -37,7 +37,7 @@ struct SnavelyReprojectionError
         // Switching to the Taylor expansion near zero provides meaningful derivatives 
         return  v + R.cross(v);
     }
-    
+    // projectPoint:
     Vec2 projectPoint(
               const Vec3Ref& R, // The compact angle-axis rotation of the camera.
               const Vec3Ref& T, // The translation of the camera.

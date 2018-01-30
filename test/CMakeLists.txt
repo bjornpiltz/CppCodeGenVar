@@ -22,7 +22,7 @@ macro(wrap_test test_name)
     target_link_libraries(${test_name}_test gtest CppCodeGenVar)
     add_test(${test_name}_test ${test_name}_test)
     add_dependencies(check ${test_name}_test)
-	set_target_properties(${test_name}_test PROPERTIES FOLDER "Tests")
+    set_target_properties(${test_name}_test PROPERTIES FOLDER "Tests")
 endmacro()
 
 wrap_test(symbol)

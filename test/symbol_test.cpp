@@ -158,8 +158,6 @@ GTEST_TEST(symbol, unary_functions)
     COMPARE(cosh(x), "cosh(x)");
     COMPARE(tanh(x), "tanh(x)");
     COMPARE(floor(x), "floor(x)");
-    auto ii = ceil(x);
-    ii.toString();
     COMPARE(ceil(x), "ceil(x)");
     
     const Symbol c1(1.0);
@@ -219,6 +217,24 @@ GTEST_TEST(symbol, simplifications)
     COMPARE(1/C1, "1");
     COMPARE(C1/C1, "1");
     COMPARE(a/1, "a");
+}
+
+GTEST_TEST(symbol, equals)
+{
+    const Symbol a("a"), b("b"), c("c");
+    const Symbol abc = a*(b+c);
+    const Symbol ab_ac = a*b + a*c;
+    COMPARE(abc, "a*(b+c)");
+    COMPARE(abc.expanded(), "a*b+a*c");
+    COMPARE(ab_ac, "a*b+a*c");
+    COMPARE(ab_ac.expanded(), "a*b+a*c");
+    COMPARE(Symbol().expanded(), "0");
+    
+    EXPECT_NE(abc.toString(), ab_ac.toString());
+    EXPECT_EQ(abc.expanded().toString(), ab_ac.expanded().toString());
+
+    EXPECT_TRUE(abc.equals(ab_ac));
+    EXPECT_TRUE(ab_ac.equals(abc));
 }
 
 GTEST_TEST(symbol, booleans)

@@ -35,6 +35,11 @@ public:
     
     std::set<std::string> getVariableNames()const;
     
+    void expand();
+    Symbol expanded()const;
+
+    bool equals(const Symbol& other)const;
+    
     // Unary '-':
     friend Symbol operator-(const Symbol& x);
     

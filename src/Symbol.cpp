@@ -86,6 +86,25 @@ std::set<std::string> Symbol::getVariableNames()const
     return result;
 }
 
+void Symbol::expand()
+{
+    *this = expanded();
+}
+
+Symbol Symbol::expanded()const
+{
+    return SymbolPrivate::ctor(SymEngine::expand(p->expression));
+}
+
+bool Symbol::equals(const Symbol& other)const
+{
+    if (other.p->expression.is_null())
+        return p->expression.is_null();
+    else if (p->expression.is_null())
+        return false;
+    return SymEngine::eq(*other.p->expression, *other.p->expression);
+}
+
 Symbol& Symbol::operator += (const Symbol& other)
 {
     Symbol copy(*this + other);
