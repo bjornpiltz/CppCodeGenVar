@@ -1,7 +1,7 @@
 #include <codegenvar/generator/CodeGenerator.h>
 #include "SymbolPrivate.h"
-#include <algorithm>
 #include <symengine/codegen.h>
+#include <algorithm>
 
 #define DEBUG_OUTPUT(a) 
 
@@ -15,12 +15,12 @@ class CodePrinter2 : public BaseVisitor<CodePrinter2, CodePrinter>
 public:
     std::string tempPrefix;
     
-    using StrPrinter::str_;
-    using StrPrinter::apply;
-    using StrPrinter::bvisit;
+    using CodePrinter::str_;
+    using CodePrinter::apply;
+    using CodePrinter::bvisit;
     
     int varCounter = 0;
-    std::map<std::string, std::string > exp2var;
+    std::map<std::string, std::string> exp2var;
     std::map<std::string , std::string> var2code;
     
     void assignToVar(const Basic& x, const char* name)
@@ -41,7 +41,19 @@ public:
         var2code[var] = str_;
         str_ = var;
     }
-    
+    void _print_pow(std::ostringstream &o, const RCP<const Basic> &a,
+                    const RCP<const Basic> &b)
+    {
+        std::ostringstream o2;
+        if (eq(*b, *rational(1, 2))) {
+            o2 << "sqrt(" << apply(a) << ")";
+        } else {
+            o2 << "pow(" << apply(a) << ", " << apply(b) << ")";
+        }
+        str_ = o2.str();
+        assignToVar(Pow(a, b), "_print_pow");
+        o << str_;
+    }
 #define PROCESS(name) void bvisit(const name &x)\
     {\
         CodePrinter:: bvisit(x);\
@@ -56,9 +68,10 @@ public:
     IGNORE(Integer)
     IGNORE(Symbol)
     IGNORE(RealDouble)
+    IGNORE(Infty)
+    IGNORE(NaN)
+    IGNORE(Pow)
     
-    PROCESS(Infty)
-    PROCESS(NaN)
     PROCESS(Rational)
     PROCESS(ComplexDouble)
     PROCESS(Equality)
@@ -81,7 +94,6 @@ public:
     PROCESS(ComplexMPC)
     PROCESS(Add)
     PROCESS(Mul)
-    PROCESS(Pow)
     PROCESS(UIntPoly)
     PROCESS(URatPoly)
     PROCESS(UExprPoly)

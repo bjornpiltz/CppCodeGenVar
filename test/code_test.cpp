@@ -10,11 +10,15 @@ inline std::string wo_ws(std::string a)
         a = a.substr(1);
     
     while (!a.empty() && std::isspace(a[a.size()-1]))
-        a = a.substr(0, a.size()-1);
+        a = a.substr(0, a.size()-1);    
+    for (auto it = a.begin(); it != a.end(); ++it)
+        if (std::iscntrl(*it))
+            *it = ' ';
     return a;
 }
 
 #define COMPARE( a, result) EXPECT_EQ(wo_ws(result), wo_ws((a).toCode()))
+#define STRINGIFY(code)  #code
 
 GTEST_TEST(code, a)
 {
@@ -35,34 +39,21 @@ GTEST_TEST(code, a)
    COMPARE(y*x*d, "out = 3.0*x*y;");
 }
 
-#if 0
-WIP:
-template<typename T>
-T fun(T r1, T r2, T r3, T p1, T p2, T p3)
+GTEST_TEST(code, mul)
 {
-    const T tmp_0 = pow(r1, 2);
-    const T tmp_1 = pow(r2, 2);
-    const T tmp_2 = pow(r3, 2);
-    const T tmp_3 = tmp_0 + tmp_1 + tmp_2;
-    //const T tmp_4 = sqrt(tmp_3);
-    //const T tmp_5 = cos(tmp_4);
-    //const T tmp_6 = p2*tmp_5;
-    const T tmp_7 = p1*r3/sqrt(tmp_3);
-    const T tmp_8 = p3*r1/sqrt(tmp_3);
-    const T tmp_9 = tmp_7 - tmp_8;
-    return tmp_9;
+   Symbol null, x("x"), y("y"), i(2), d(3.0);
+   COMPARE(y*(x*i), STRINGIFY(
+       out = 2*x*y;
+   ));
+   COMPARE(y*(x*i*x), STRINGIFY(
+       const double tmp_0 = pow(x, 2);
+       out = 2*tmp_0*y;
+   ));
+   COMPARE(y*(i/x), STRINGIFY(
+       out = 2*y/x;
+   ));
+   COMPARE(y*(i/sqrt(x)), STRINGIFY(
+        const double tmp_0 = sqrt(x);
+        out = 2*y/tmp_0;
+   ));
 }
-
-
-GTEST_TEST(code, b)
-{
-    return;
-    using codegenvar::Symbol;
-    
-    Symbol r1("r1"), r2("r2"), r3("r3");
-    Symbol p1("p1"), p2("p2"), p3("p3");
-    Symbol x = fun(r1, r2, r3, p1, p2, p3);
-    std::cerr << x.toString() << std::endl << std::endl;
-    std::cerr << x.toCode() << std::endl << std::endl;
-}
-#endif
