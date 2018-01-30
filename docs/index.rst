@@ -12,7 +12,7 @@ Which produces this output:
 
 .. literalinclude:: symbol_example.txt
 
-For more, see :doc:`features`.
+For something more useful, see :doc:`examples`.
   
 The project is available at 
 its `GitHub Site
@@ -22,7 +22,6 @@ its `GitHub Site
    :maxdepth: 1
    :hidden:
    
-   tutorial
-   features
+   examples
    installation
    license

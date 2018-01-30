@@ -1,0 +1,23 @@
+Rodrigues:
+v_0*cos(theta) + (-v_1*k_2 + v_2*k_1)*sin(theta) + k_0*(1 - cos(theta))*(v_0*k_0 + v_1*k_1 + v_2*k_2)
+ v_1*cos(theta) + (v_0*k_2 - v_2*k_0)*sin(theta) + k_1*(1 - cos(theta))*(v_0*k_0 + v_1*k_1 + v_2*k_2)
+v_2*cos(theta) + (-v_0*k_1 + v_1*k_0)*sin(theta) + k_2*(1 - cos(theta))*(v_0*k_0 + v_1*k_1 + v_2*k_2)
+
+Eigen:
+v_0*(pow(k_0, 2)*(1 - cos(theta)) + cos(theta)) + v_1*(-k_2*sin(theta) + k_1*k_0*(1 - cos(theta))) + v_2*(k_1*sin(theta) + k_2*k_0*(1 - cos(theta)))
+v_0*(k_2*sin(theta) + k_1*k_0*(1 - cos(theta))) + v_1*(pow(k_1, 2)*(1 - cos(theta)) + cos(theta)) + v_2*(-k_0*sin(theta) + k_2*k_1*(1 - cos(theta)))
+v_0*(-k_1*sin(theta) + k_2*k_0*(1 - cos(theta))) + v_1*(k_0*sin(theta) + k_2*k_1*(1 - cos(theta))) + v_2*(pow(k_2, 2)*(1 - cos(theta)) + cos(theta))
+
+The two expressions are equal.
+
+Expanded:
+
+Rodrigues:
+v_0*pow(k_0, 2) + v_0*cos(theta) - v_0*pow(k_0, 2)*cos(theta) + v_1*k_1*k_0 - v_1*k_2*sin(theta) + v_2*k_1*sin(theta) + v_2*k_2*k_0 - v_1*k_1*k_0*cos(theta) - v_2*k_2*k_0*cos(theta)
+v_1*pow(k_1, 2) + v_1*cos(theta) + v_0*k_1*k_0 + v_0*k_2*sin(theta) - v_1*pow(k_1, 2)*cos(theta) - v_2*k_0*sin(theta) + v_2*k_2*k_1 - v_0*k_1*k_0*cos(theta) - v_2*k_2*k_1*cos(theta)
+v_2*pow(k_2, 2) + v_2*cos(theta) - v_0*k_1*sin(theta) + v_0*k_2*k_0 + v_1*k_0*sin(theta) + v_1*k_2*k_1 - v_2*pow(k_2, 2)*cos(theta) - v_0*k_2*k_0*cos(theta) - v_1*k_2*k_1*cos(theta)
+
+Eigen:
+v_0*pow(k_0, 2) + v_0*cos(theta) - v_0*pow(k_0, 2)*cos(theta) + v_1*k_1*k_0 - v_1*k_2*sin(theta) + v_2*k_1*sin(theta) + v_2*k_2*k_0 - v_1*k_1*k_0*cos(theta) - v_2*k_2*k_0*cos(theta)
+v_1*pow(k_1, 2) + v_1*cos(theta) + v_0*k_1*k_0 + v_0*k_2*sin(theta) - v_1*pow(k_1, 2)*cos(theta) - v_2*k_0*sin(theta) + v_2*k_2*k_1 - v_0*k_1*k_0*cos(theta) - v_2*k_2*k_1*cos(theta)
+v_2*pow(k_2, 2) + v_2*cos(theta) - v_0*k_1*sin(theta) + v_0*k_2*k_0 + v_1*k_0*sin(theta) + v_1*k_2*k_1 - v_2*pow(k_2, 2)*cos(theta) - v_0*k_2*k_0*cos(theta) - v_1*k_2*k_1*cos(theta)

@@ -20,10 +20,6 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-# passing some variables to sphinx
-my_config_value = "${CMAKE_CURRENT_BINARY_DIR}"
-rst_epilog = '.. |my_config_value| replace:: %s' % my_config_value
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -38,6 +34,7 @@ extensions = ['sphinx.ext.doctest',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',  
+	'sphinx_tabs.tabs',
     'sphinx.ext.githubpages']
 
 # Add any paths that contain templates here, relative to this directory.
