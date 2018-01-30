@@ -115,5 +115,5 @@ after_success:
       cmake -DBUILD_COVERAGE=ON  -DCMAKE_PREFIX_PATH=${INSTALL_DIR} ..;
       make check;
       cd ..;
-      coveralls -b $BUILD_COVERAGE --exclude third_party --exclude tests --exclude test/googletest --gcov-options '\-lp';
+      coveralls -b $BUILD_COVERAGE --exclude third_party --exclude install --exclude build --exclude test/googletest --gcov-options '\-lp';
     fi
