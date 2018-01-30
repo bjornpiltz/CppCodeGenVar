@@ -26,3 +26,4 @@ macro(wrap_test test_name)
 endmacro()
 
 wrap_test(symbol)
+wrap_test(code)

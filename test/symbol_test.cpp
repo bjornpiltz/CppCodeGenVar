@@ -18,7 +18,7 @@ inline std::string wo_ws(std::string a)
 
 #define COMPARE( a, result) EXPECT_EQ(wo_ws(result), wo_ws((a).toString()))
 
-GTEST_TEST(BasicTest, ctors_and_assignment)
+GTEST_TEST(symbol, ctors_and_assignment)
 {
     // Test a default constructed object:
     Symbol a;
@@ -86,7 +86,7 @@ GTEST_TEST(BasicTest, ctors_and_assignment)
     // TODO: plus assignments, etc
 }
 
-GTEST_TEST(BasicTest, simple_expressions)
+GTEST_TEST(symbol, simple_expressions)
 {
     const Symbol a("a"), b("b"), c("c"), d("d"), C3(3), C3_0(3.0);
     
@@ -140,7 +140,7 @@ GTEST_TEST(BasicTest, simple_expressions)
     COMPARE(a-b*c, "a-b*c");
     COMPARE(-a, "-a");
 }
-GTEST_TEST(BasicTest, unary_functions)
+GTEST_TEST(symbol, unary_functions)
 {
     Symbol x("x");
 
@@ -184,7 +184,7 @@ GTEST_TEST(BasicTest, unary_functions)
     EVALUATE_UNARY_FUNCTION(ceil);
 }
 
-GTEST_TEST(BasicTest, pow)
+GTEST_TEST(symbol, pow)
 {
     const Symbol a("a"), b("b"), c("c"), C1(1);
     
@@ -196,7 +196,7 @@ GTEST_TEST(BasicTest, pow)
     COMPARE(pow(a, 2), "pow(a, 2)");
 }
 
-GTEST_TEST(BasicTest, simplifications)
+GTEST_TEST(symbol, simplifications)
 {
     const Symbol a("a"), b("b"), C1(1);
     
@@ -221,7 +221,7 @@ GTEST_TEST(BasicTest, simplifications)
     COMPARE(a/1, "a");
 }
 
-GTEST_TEST(BasicTest, booleans)
+GTEST_TEST(symbol, booleans)
 {
     const Symbol a("a"), b("b"), c("c");
 
@@ -233,7 +233,7 @@ GTEST_TEST(BasicTest, booleans)
     EXPECT_ANY_THROW(result = (a+b+c !=  c+a));
 }
 
-GTEST_TEST(BasicTest, substitutions)
+GTEST_TEST(symbol, substitutions)
 {
     const Symbol a("a"), b("b"), c("c"), d("d");
     

@@ -2,7 +2,6 @@
 #include "SymbolPrivate.h"
 #include "Error.h"
 #include <symengine/add.h>
-#include <symengine/codegen.h>
 #include <symengine/functions.h>
 #include <symengine/visitor.h>
 #include <symengine/eval_double.h>
