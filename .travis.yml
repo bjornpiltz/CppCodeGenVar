@@ -90,6 +90,7 @@ before_script:
   - |
     cd ${TRAVIS_BUILD_DIR}/build
     git clone --depth 1 https://github.com/symengine/symengine
+    git checkout d9ed52871682c0c909673f9e8f82845abd756598
     cd symengine
     cmake . -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF
     make -j2 install
