@@ -8,6 +8,7 @@
 #endif
 
 #include <symengine/symbol.h>
+#include <symengine/logic.h>
 
 #if defined(_MSC_VER)
 # pragma warning( pop ) 
@@ -18,21 +19,20 @@ namespace codegenvar {
 namespace internal {
 
 class SymbolPrivate;
-struct BooleanEvaluatorPrivate;
 
 typedef SymEngine::RCP<const SymEngine::Basic> SymExpr;
+typedef SymEngine::RCP<const SymEngine::Boolean> Condition;
 
 class SymbolPrivate
 {
 public:
     SymExpr expression; 
-    std::weak_ptr<internal::BooleanEvaluatorPrivate> booleanEvaluator;
     
-    static Symbol ctor(SymExpr ptr)
+    static std::unique_ptr<SymbolPrivate> ctor(SymExpr ptr)
     {
-        Symbol result;
-        result.p->expression = ptr;
-        return result;
+        auto p = std::unique_ptr<SymbolPrivate>(new internal::SymbolPrivate);
+        p->expression = ptr;
+        return p;
     }
 };
 

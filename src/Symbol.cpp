@@ -1,4 +1,5 @@
 #include <codegenvar/Symbol.h>
+#include "BooleanEvaluatorPrivate.h"
 #include "SymbolPrivate.h"
 #include <symengine/add.h>
 #include <symengine/functions.h>
@@ -184,6 +185,7 @@ Symbol& Symbol::operator *= (const Scalar& other){ return *this *= Symbol(other)
 Symbol& Symbol::operator /= (const Scalar& other){ return *this /= Symbol(other);}
 
 Symbol pow(const Symbol&x, const Scalar& y){return pow(x, Symbol(y));}
+Symbol pow(const Scalar&x, const Symbol& y){return pow(Symbol(x), y);}
 
 
 bool operator ==(const Symbol& lhs, const Scalar& rhs){ return (lhs) == Symbol(rhs); }
@@ -245,26 +247,41 @@ std::ostream& operator<<(std::ostream& os, const Symbol& a)
     return os << a.toString();
 }
 
+Symbol::Symbol(std::unique_ptr<SymbolPrivate>&& other)
+    : p(std::move(other))
+{
+    // All other constructors must call this one!
+    if (auto evaluator = BooleanEvaluator::get().lock())
+    {
+        auto condition = evaluator->getCurrentContext();
+        if (!condition.is_null())
+        {
+            // TODO: piecewice
+            auto q = piecewise({{one, contains(x, int1)},
+            p->condition = condition;
+        }
+    }
+}
+
 Symbol::Symbol()
-    : p(new SymbolPrivate)
+    : Symbol(std::unique_ptr<SymbolPrivate>(new SymbolPrivate))
 {   
     p->expression = integer(0);
 }
 
 Symbol::Symbol(const Symbol& other)
-    : p(new SymbolPrivate(*other.p))
+    : Symbol(std::unique_ptr<SymbolPrivate>(new SymbolPrivate(*other.p)))
 {
 }
 
 Symbol::Symbol(Symbol&& other)
-    : p(std::move(other.p))
+    : Symbol(std::move(other.p))
 {   
 }
 
 Symbol& Symbol::operator=(const Symbol& other)
 {
-    Symbol(other).p.swap(p);
-    return *this;
+    return *this=Symbol(other);
 }
 
 Symbol& Symbol::operator=(Symbol&& other)

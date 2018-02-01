@@ -1,119 +1,52 @@
 #include "SymbolPrivate.h"
+#include "BooleanEvaluatorPrivate.h"
 #include <codegenvar/BooleanEvaluator.h>
 #include <symengine/add.h>
 #include <symengine/integer.h>
 #include <symengine/real_double.h>
-#include <symengine/logic.h>
 
 namespace codegenvar {
 
-using namespace SymEngine;
-
-namespace internal {
-
-enum Bool{True=1, False=0};
-
-struct YADAYADAYADA
-{
-    YADAYADAYADA(const RCP<const Boolean>& condition, Bool value)
-        : condition(condition)
-        , value(value)
-    {
-    }
-    RCP<const Boolean> condition;//TODO: do we need condition?
-    Bool value;
-};
-typedef std::vector<YADAYADAYADA> TreeAddress;
-
-struct TreeNode
-{
-    RCP<const Boolean> condition;
-    struct{
-        std::unique_ptr<TreeNode> child;
-        SymExpr eval;
-    }data[2];
-    
-    bool isFullyEvaluated()const
-    {
-        return (!data[True].eval.is_null() || data[True].child->isFullyEvaluated())
-            && (!data[False].eval.is_null()|| data[False].child->isFullyEvaluated());
-    }
-    bool isEvaluated(const TreeAddress& address)const
-    {
-        ASSERT(!address.empty());
-        auto yada = address.front();
-        const auto& tba = data[yada.value];
-        if (address.size()==1)
-        {
-            if (!tba.eval.is_null())
-                return true;
-            if (!tba.child)
-                return false;
-            return tba.child->isFullyEvaluated();
-        }
-        ASSERT(yada.condition->__eq__(*condition));
-        
-        const auto& child = tba.child;
-        ASSERT(child);
-        return child->isEvaluated(TreeAddress(address.begin()+1, address.end()));
-    }
-    void insert(const TreeAddress& address, SymExpr expr)
-    {
-        ASSERT(!address.empty());
-        auto yada = address.front();
-        auto& tba = data[yada.value];
-        if (address.size()==1)
-        {
-            CONDITION(!tba.child, "It seems the function tested is not deterministic. (1)");
-            if (!tba.eval.is_null())
-                CONDITION(expr->__eq__(*tba.eval), "It seems the function tested is not deterministic. (2)");
-            else
-                tba.eval = expr;
-            return;
-        }
-        ASSERT(yada.condition->__eq__(*condition));
-        
-        const auto& child = tba.child;
-        ASSERT(child);
-        child->insert(TreeAddress(address.begin()+1, address.end()), expr);
-    }
-};
-
-struct BooleanEvaluatorPrivate
-{
-    enum Op{LT, EQ, GT};
-    
-    static bool handle(const SymbolPrivate* lhs, const SymbolPrivate* rhs, Op op);
-    bool handle(SymExpr lhs, SymExpr rhs, Op op);
-    bool done(SymExpr expr);
-    
-    typedef std::unique_ptr<TreeNode> EvaluatedBooleans;
-    TreeNode evaluated;
-    TreeAddress currentContext;
-};
-
-} // namespace internal
-
 using internal::BooleanEvaluatorPrivate;
+    
+std::shared_ptr<internal::BooleanEvaluatorPrivate> BooleanEvaluator::p;
 
 BooleanEvaluator::BooleanEvaluator()
-    : p(std::make_shared<BooleanEvaluatorPrivate>())
 {
+    if (p)
+        ERROR("There can only be one BooleanEvaluator.");
+    p = std::make_shared<BooleanEvaluatorPrivate>();
 }
 
-Symbol BooleanEvaluator::getSymbol(const std::string name)const
+std::weak_ptr<internal::BooleanEvaluatorPrivate> BooleanEvaluator::get()
 {
-    Symbol symbol(name);
-    symbol.p->booleanEvaluator = p;
-    return symbol;
+    return p;
 }
 
-bool BooleanEvaluator::done(const Symbol& symbol) const
+bool BooleanEvaluator::done(std::map<std::string, TBA>& map) const
 {
-    CONDITION(!symbol.p->expression.is_null(), "Invalid expression");
-    if (auto evaluator = symbol.p->booleanEvaluator.lock())
-        return evaluator->done(symbol.p->expression);
-    return true;
+    for (auto& pair : map)
+    {
+        const auto& key = pair.first;
+        TBA& symbol = pair.second;
+    }
+
+    if (p->currentContext.empty())
+        return true;
+     
+    p->evaluated.insert(p->currentContext, SymEngine::integer(1));
+
+    p->currentContext = {};
+    bool isDone = p->evaluated.isFullyEvaluated();
+    if (isDone)
+    {
+        int sdfsdf  = 0;
+    }
+    return isDone;
+    /*
+    
+    */
+    return false;
 }
 
 bool operator ==(const Symbol& lhs, const Symbol& rhs)
@@ -136,13 +69,7 @@ namespace internal {
 bool BooleanEvaluatorPrivate::handle(const SymbolPrivate *lhs, const SymbolPrivate *rhs, Op op)
 {
     using namespace SymEngine;
-    auto evaluator = lhs->booleanEvaluator.lock();
-    if (!evaluator)
-        evaluator = rhs->booleanEvaluator.lock();    
-    else if (auto other = rhs->booleanEvaluator.lock())
-        if (other && other!=evaluator)
-            ERROR("There are two different boolean evaluators");        
-    
+    auto evaluator = BooleanEvaluator::get().lock();
     if (evaluator)
         return evaluator->handle(lhs->expression, rhs->expression, op);
     
@@ -183,14 +110,21 @@ bool BooleanEvaluatorPrivate::handle(SymExpr lhs, SymExpr rhs, Op op)
     case GT: condition = Gt(lhs, rhs); break;
     }
     
-std::cerr << "Boolean logic goes here. " << condition->__str__() << std::endl;
-    
+for(int i = 0; i< currentContext.size(); i++)
+    std::cerr << "    ";
+
     currentContext.emplace_back(condition, True);
     if (!evaluated.isEvaluated(currentContext))
+    {
+// std::cerr << "if( " << condition->__str__() << " == true)" << std::endl;
         return true;
+    }
     currentContext.back().value = False;
     if (!evaluated.isEvaluated(currentContext))
+    {
+// std::cerr << "if( " << condition->__str__() << " != true)" << std::endl;
         return false;
+    }
     
 std::cerr << "TODO: Should i be here?" << std::endl;
 
@@ -199,15 +133,81 @@ std::cerr << "TODO: Should i be here?" << std::endl;
 
 bool BooleanEvaluatorPrivate::done(SymExpr expr)
 {
-    if (!currentContext.empty())
-    {
-        evaluated.insert(currentContext, expr);
-        currentContext = {};
-    }
+    if (currentContext.empty())
+        return true;
+     
+    evaluated.insert(currentContext, expr);
+
     
-    return evaluated.isFullyEvaluated();
+for(int i = 0; i< currentContext.size(); i++)
+    std::cerr << "    ";
+std::cerr << expr->__str__() << std::endl;
+
+    currentContext = {};
+    bool isDone = evaluated.isFullyEvaluated();
+    if (isDone)
+    {
+        int sdfsdf  = 0;
+    }
+    return isDone;
+}
+
+RCP<const Boolean> BooleanEvaluatorPrivate::getCurrentContext()const
+{
+    if (currentContext.empty())
+        return {};
+
+    set_boolean set;
+    for (auto branch : currentContext)
+    {
+        if (branch.value==True)
+            set.insert(branch.condition);
+        else
+            set.insert(branch.condition->logical_not());
+    }
+    // TODO: std::cerr << logical_and(set)->__str__() << std::endl;
+    return logical_and(set);
+}
+
+
+bool ConditionalTree::isFullyEvaluated()const
+{
+    return branch[True].isFullyEvaluated() && branch[False].isFullyEvaluated();
+}
+
+bool ConditionalTree::isEvaluated(const Iterator& address)const
+{
+    ASSERT(!address.empty());
+    const auto& child = branch[address.front().value];
+    if (address.size()==1)
+        return child.isFullyEvaluated();
+    return child.node && child.node->isEvaluated(Iterator(address.begin()+1, address.end()));
+}
+
+void ConditionalTree::insert(const Iterator& address, SymExpr expr)
+{
+    ASSERT(!address.empty());
+    auto& child = branch[address.front().value];
+    if (address.size()==1)
+    {
+        CONDITION(!child.node, "It seems the function tested is not deterministic. (1)");
+        if (!child.leaf.is_null())
+            CONDITION(expr->__eq__(*child.leaf), "It seems the function tested is not deterministic. (2)");
+        else
+            child.leaf = expr;
+        return;
+    }
+    if(!child.node)
+        child.node = std::unique_ptr<ConditionalTree>(new ConditionalTree);
+    child.node->insert(Iterator(address.begin()+1, address.end()), expr);
 }
 
 } // namespace internal
+
+void TBA::operator=(const Symbol& other) 
+{
+    //std::cerr << "if (" << other.p->condition->__str__() << ")" << std::endl; 
+    //std::cerr << "    "<< other.p->expression->__str__() << std::endl; ; 
+}
 
 } // namespace codegenvar

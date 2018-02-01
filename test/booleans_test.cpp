@@ -114,22 +114,19 @@ GTEST_TEST(booleans, uninitialized)
     EXPECT_EQ(x <= x, true);
     EXPECT_EQ(x >= x, true);    
 }
-
 GTEST_TEST(booleans, a)
 {
     BooleanEvaluator evaluator;
     
-    EXPECT_TRUE(evaluator.done(Symbol(1)));
-    EXPECT_TRUE(evaluator.done(Symbol("x")));
+    // TODO: EXPECT_TRUE(evaluator.done({ "", Symbol(1) }));
+    // TODO:EXPECT_TRUE(evaluator.done(Symbol("x")));
     
-    Symbol x = evaluator.getSymbol("x");
-    Symbol y = evaluator.getSymbol("y");
-    Symbol z;
+    Symbol x("x"), y("y");
     
-    EXPECT_TRUE(evaluator.done((x+y)*3));
-    
+    // TODO:EXPECT_TRUE(evaluator.done((x+y)*3));
+    std::map<std::string, TBA> results;
     do
     {
-        z = testFun(x, y);
-    }while (!evaluator.done(z));
+        results["z"] = testFun(x, y);
+    }while (!evaluator.done(results));
 }

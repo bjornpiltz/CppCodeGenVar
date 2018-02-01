@@ -32,6 +32,6 @@ public:
 }// namespace internal
 }// namespace codegenvar 
 
-#define ERROR(msg) MyException(msg, __FILE__, __LINE__) 
+#define ERROR(msg) codegenvar::internal::MyException(msg, __FILE__, __LINE__) 
 #define CONDITION(cond, msg) do{if(!(cond))codegenvar::internal::MyException(msg, __FILE__, __LINE__);}while(false)
 #define ASSERT(cond) do{if(!(cond))codegenvar::internal::MyException(#cond, __FILE__, __LINE__);}while(false)

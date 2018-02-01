@@ -98,8 +98,9 @@ public:
     Symbol& operator-=(const Scalar& other);
     Symbol& operator*=(const Scalar& other);    
     Symbol& operator/=(const Scalar& other);
-
+    
     friend Symbol pow(const Symbol&, const Scalar&);
+    friend Symbol pow(const Scalar&, const Symbol&);
     
     friend bool operator ==(const Symbol& lhs, const Scalar& rhs);
     friend bool operator ==(const Scalar& lhs, const Symbol& rhs);
@@ -128,13 +129,15 @@ public:
 private:
     friend class internal::SymbolPrivate;
     std::unique_ptr<class internal::SymbolPrivate> p;
-    
+    Symbol(std::unique_ptr<class internal::SymbolPrivate>&&);
+
 private:
     friend struct CodeGenerator;
     friend struct DerivateEvaluator;
     friend struct NumericalEvaluator;
     friend struct StringEvaluator;
     friend struct BooleanEvaluator;
+    friend struct TBA;
 };
 
 }// namespace codegenvar

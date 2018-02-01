@@ -3,17 +3,26 @@
 #include <memory>
 
 namespace codegenvar {
+    
+struct TBA
+{
+    void operator=(const Symbol& other);
+private:
+    std::unique_ptr<int> p;//Todo make non copyable
+};
 
-namespace internal {class BooleanEvaluatorPrivate;}
+namespace internal {struct BooleanEvaluatorPrivate;}
 
 struct BooleanEvaluator
 {
     BooleanEvaluator();
-    Symbol getSymbol(const std::string name)const;
-    bool done(const Symbol&)const;
+    bool done(std::map<std::string, TBA>&)const;
     
 private:
-    std::shared_ptr<internal::BooleanEvaluatorPrivate> p;
+    friend struct internal::BooleanEvaluatorPrivate;
+    friend class Symbol;
+    static std::shared_ptr<internal::BooleanEvaluatorPrivate> p;
+    static std::weak_ptr<internal::BooleanEvaluatorPrivate> get();
 };
 
 } // namespace codegenvar

@@ -125,6 +125,7 @@ GTEST_TEST(symbol, simple_expressions)
     COMPARE(cos(a + c), "cos(a + c)");
     COMPARE(pow(a, c), "pow(a,c)");
     COMPARE(pow(a, 2), "pow(a,2)");
+    COMPARE(pow(2, a), "pow(2,a)");
     COMPARE(pow(a, 2*b), "pow(a,2*b)");
     COMPARE(pow(a, 2*b)+c, "c + pow(a,2*b)");
     COMPARE(-pow(a, 2), "-pow(a,2)");
@@ -236,18 +237,6 @@ GTEST_TEST(symbol, equals)
 
     EXPECT_TRUE(abc.equals(ab_ac));
     EXPECT_TRUE(ab_ac.equals(abc));
-}
-
-GTEST_TEST(symbol, booleans)
-{
-    const Symbol a("a"), b("b"), c("c");
-
-    bool result = true;
-    //Boolean logic is not supported yet.
-    EXPECT_ANY_THROW(result = (a+b+c == a+b+c));
-    EXPECT_ANY_THROW(result = (a+b+c != a+b+c));
-    EXPECT_ANY_THROW(result = (a+b+c ==  c+a));
-    EXPECT_ANY_THROW(result = (a+b+c !=  c+a));
 }
 
 GTEST_TEST(symbol, substitutions)
