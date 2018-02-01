@@ -1,8 +1,10 @@
 cmake_minimum_required (VERSION 3.0)
 find_package(SymEngine CONFIG REQUIRED)
-include_directories(${SYMENGINE_INCLUDE_DIRS}) 
+include_directories(${SYMENGINE_INCLUDE_DIRS})
 
 set(HDRS 
+  ${PROJECT_SRC_DIR}/include/codegenvar/BooleanEvaluator.h
+  ${PROJECT_SRC_DIR}/include/codegenvar/Eigen
   ${PROJECT_SRC_DIR}/include/codegenvar/Scalar.h
   ${PROJECT_SRC_DIR}/include/codegenvar/Symbol.h
   ${PROJECT_SRC_DIR}/include/codegenvar/SymbolWithEigenBindings.h
@@ -12,14 +14,15 @@ set(HDRS
 )
 
 set(SRCS 
-  ${PROJECT_SRC_DIR}/src/Scalar.cpp 
-  ${PROJECT_SRC_DIR}/src/Symbol.cpp 
+  ${PROJECT_SRC_DIR}/src/BooleanEvaluator.cpp
+  ${PROJECT_SRC_DIR}/src/Scalar.cpp
+  ${PROJECT_SRC_DIR}/src/Symbol.cpp
   ${PROJECT_SRC_DIR}/src/generator/CodeGenerator.cpp
   ${PROJECT_SRC_DIR}/src/generator/DerivateGenerator.cpp
   ${PROJECT_SRC_DIR}/src/generator/StringGenerator.cpp
 )
 
-set(INTERNALS  
+set(INTERNALS
   Error.h
   SymbolPrivate.h
 )
@@ -30,7 +33,7 @@ target_link_libraries(CppCodeGenVar ${SYMENGINE_LIBRARIES})
 target_include_directories(CppCodeGenVar 
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SRC_DIR}/include>
-    $<INSTALL_INTERFACE:include>  
+    $<INSTALL_INTERFACE:include>
     
   PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -39,7 +42,7 @@ target_include_directories(CppCodeGenVar
     ${PROJECT_SRC_DIR}/third_party/ceres-solver/config
 )
 set_target_properties(CppCodeGenVar PROPERTIES FOLDER "Libraries")
-  
+
 # Enable PIC, so shared libraries can link against it CppCodeGenVar.
 set_target_properties(CppCodeGenVar PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
@@ -49,4 +52,3 @@ install(TARGETS CppCodeGenVar
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION lib )
-      

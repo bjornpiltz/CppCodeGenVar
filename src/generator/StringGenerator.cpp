@@ -1,6 +1,5 @@
 #include <codegenvar/generator/StringGenerator.h>
 #include "SymbolPrivate.h"
-#include "Error.h"
 #include <symengine/printer.h>
 
 namespace codegenvar{

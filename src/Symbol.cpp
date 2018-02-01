@@ -1,6 +1,5 @@
 #include <codegenvar/Symbol.h>
 #include "SymbolPrivate.h"
-#include "Error.h"
 #include <symengine/add.h>
 #include <symengine/functions.h>
 #include <symengine/visitor.h>
@@ -236,11 +235,6 @@ Symbol operator -(const Symbol& value)
 {
     return SymbolPrivate::ctor(sub(integer(0), value.p->expression));
 }
-
-// TODO: implement boolean logic.
-bool operator ==(const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
-bool operator < (const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
-bool operator > (const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
 
 bool operator !=(const Symbol& lhs, const Symbol& rhs){ return !(lhs == rhs);}
 bool operator <=(const Symbol& lhs, const Symbol& rhs){ return !(lhs  > rhs);}

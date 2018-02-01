@@ -134,6 +134,7 @@ private:
     friend struct DerivateEvaluator;
     friend struct NumericalEvaluator;
     friend struct StringEvaluator;
+    friend struct BooleanEvaluator;
 };
 
 }// namespace codegenvar

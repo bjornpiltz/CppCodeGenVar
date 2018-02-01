@@ -5,6 +5,7 @@
 #include <cctype>
 
 using namespace codegenvar;
+
 inline std::string wo_ws(std::string a)
 {
     std::string b(a);
