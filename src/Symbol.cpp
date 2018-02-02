@@ -12,6 +12,7 @@ using SymEngine::symbol;
 using SymEngine::integer;
 using SymEngine::real_double;
 using SymEngine::free_symbols;
+using SymEngine::Piecewise;
 
 namespace internal
 {
@@ -133,12 +134,6 @@ Symbol& Symbol::operator /= (const Symbol& other)
     return *this;
 }
 
-// Unary div
-Symbol Symbol::inverse()const 
-{  
-    return SymbolPrivate::ctor(div(integer(1), p->expression));
-}
-
 Symbol Symbol::resolved(const Symbol::Map& symbolMap) const
 {
     CONDITION(!p->expression.is_null(), "Symbol is uninitialized");
@@ -250,17 +245,47 @@ std::ostream& operator<<(std::ostream& os, const Symbol& a)
 Symbol::Symbol(std::unique_ptr<SymbolPrivate>&& other)
     : p(std::move(other))
 {
-    // All other constructors must call this one!
-    if (auto evaluator = BooleanEvaluator::get().lock())
+}
+
+Symbol& Symbol::operator|=(const Symbol& symbol)
+{
+    auto evaluator = BooleanEvaluator::get().lock();
+    if (!evaluator)
+        return *this = symbol;
+     
+    auto condition = evaluator->getCurrentContext();
+    if (condition.is_null())
+        return *this = symbol;
+        
+    auto q = piecewise({ {symbol.p->expression, condition} });
+    if (SymEngine::is_a<Piecewise>(*p->expression))
     {
-        auto condition = evaluator->getCurrentContext();
-        if (!condition.is_null())
-        {
-            // TODO: piecewice
-            auto q = piecewise({{one, contains(x, int1)},
-            p->condition = condition;
-        }
+        const Piecewise& piecewise = SymEngine::down_cast<const Piecewise&>(*p->expression);
+        PiecewiseVec vec = piecewise.get_vec();
+        ASSERT(vec.size()!=0);
+        // TODO: check if vec already contains condition
+        vec.emplace_back(std::make_pair(symbol.p->expression, condition));
+        CONDITION(false, "TODO: vec << ");
     }
+    else
+    {
+        if (!p->expression->__eq__(*integer(0)))
+            std::cerr << "Warning: overwriting expression: " << p->expression->__str__() << std::endl;
+        std::swap(q, p->expression);
+    }
+    return *this;
+}
+
+bool Symbol::isFullyEvaluated()const
+{
+    if (SymEngine::is_a<Piecewise>(*p->expression))
+    {
+        const Piecewise& piecewise = SymEngine::down_cast<const Piecewise&>(*p->expression);
+        ASSERT(piecewise.get_vec().size()!=0);
+        auto pair = piecewise.get_vec().back();
+        return pair.second->__eq__(*boolTrue);
+    }
+    return true;
 }
 
 Symbol::Symbol()

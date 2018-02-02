@@ -4,19 +4,12 @@
 
 namespace codegenvar {
     
-struct TBA
-{
-    void operator=(const Symbol& other);
-private:
-    std::unique_ptr<int> p;//Todo make non copyable
-};
-
 namespace internal {struct BooleanEvaluatorPrivate;}
 
 struct BooleanEvaluator
 {
     BooleanEvaluator();
-    bool done(std::map<std::string, TBA>&)const;
+    bool done()const;
     
 private:
     friend struct internal::BooleanEvaluatorPrivate;

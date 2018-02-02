@@ -39,6 +39,7 @@ public:
     Symbol expanded()const;
 
     bool equals(const Symbol& other)const;
+    bool isFullyEvaluated()const;
     
     // Unary '-':
     friend Symbol operator-(const Symbol& x);
@@ -54,8 +55,6 @@ public:
     Symbol& operator*=(const Symbol& other);
     Symbol& operator/=(const Symbol& other);
         
-    Symbol inverse()const;
-    
     // Unary functions:
     
     friend Symbol abs(const Symbol&);
@@ -123,6 +122,7 @@ public:
     Symbol(const Symbol&);
     Symbol(Symbol&&);
     Symbol& operator=(const Symbol&);
+    Symbol& operator|=(const Symbol&);
     Symbol& operator=(Symbol&&);
     void swap(Symbol& other);
 
@@ -137,7 +137,6 @@ private:
     friend struct NumericalEvaluator;
     friend struct StringEvaluator;
     friend struct BooleanEvaluator;
-    friend struct TBA;
 };
 
 }// namespace codegenvar

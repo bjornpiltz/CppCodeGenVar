@@ -116,17 +116,20 @@ GTEST_TEST(booleans, uninitialized)
 }
 GTEST_TEST(booleans, a)
 {
+    Symbol x("x"), y("y"), c1(1);
+
+    EXPECT_TRUE(c1.isFullyEvaluated());
+    EXPECT_TRUE(x.isFullyEvaluated());
+    EXPECT_TRUE((x+y+3).isFullyEvaluated());
+    
+    Symbol tmp;
+    EXPECT_TRUE((tmp|=(x+y+3)).isFullyEvaluated());
     BooleanEvaluator evaluator;
-    
-    // TODO: EXPECT_TRUE(evaluator.done({ "", Symbol(1) }));
-    // TODO:EXPECT_TRUE(evaluator.done(Symbol("x")));
-    
-    Symbol x("x"), y("y");
-    
-    // TODO:EXPECT_TRUE(evaluator.done((x+y)*3));
-    std::map<std::string, TBA> results;
+    EXPECT_TRUE((tmp|=(x+y+3)).isFullyEvaluated());
+    EXPECT_TRUE(tmp.equals(x+y+3));
+    Symbol z;
     do
     {
-        results["z"] = testFun(x, y);
-    }while (!evaluator.done(results));
+        z |= testFun(x, y);
+    }while (!z.isFullyEvaluated());
 }

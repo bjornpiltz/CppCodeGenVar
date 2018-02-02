@@ -22,15 +22,13 @@ int main()
     vars.emplace_back(v);
     
     Symbol residuals[2];
-    std::map<std::string, TBA> result;
     BooleanEvaluator evaluator;
     do
     {
         function(&vars[0], &vars[9], residuals);
-        result["x"] = residuals[0];
-        result["y"] = residuals[1];
     }
-    while (!evaluator.done(result));
+    while (!residuals[0].isFullyEvaluated()
+        && !residuals[1].isFullyEvaluated());
     
     DerivateEvaluator evaluate;
     evaluate.options.constants.insert({"obs_x", "obs_y"});

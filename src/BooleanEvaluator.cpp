@@ -23,15 +23,9 @@ std::weak_ptr<internal::BooleanEvaluatorPrivate> BooleanEvaluator::get()
     return p;
 }
 
-bool BooleanEvaluator::done(std::map<std::string, TBA>& map) const
+bool BooleanEvaluator::done() const
 {
-    for (auto& pair : map)
-    {
-        const auto& key = pair.first;
-        TBA& symbol = pair.second;
-    }
-
-    if (p->currentContext.empty())
+   /* if (p->currentContext.empty())
         return true;
      
     p->evaluated.insert(p->currentContext, SymEngine::integer(1));
@@ -43,7 +37,7 @@ bool BooleanEvaluator::done(std::map<std::string, TBA>& map) const
         int sdfsdf  = 0;
     }
     return isDone;
-    /*
+    
     
     */
     return false;
@@ -165,6 +159,7 @@ RCP<const Boolean> BooleanEvaluatorPrivate::getCurrentContext()const
         else
             set.insert(branch.condition->logical_not());
     }
+    // TODO: check final else:
     // TODO: std::cerr << logical_and(set)->__str__() << std::endl;
     return logical_and(set);
 }
@@ -203,11 +198,5 @@ void ConditionalTree::insert(const Iterator& address, SymExpr expr)
 }
 
 } // namespace internal
-
-void TBA::operator=(const Symbol& other) 
-{
-    //std::cerr << "if (" << other.p->condition->__str__() << ")" << std::endl; 
-    //std::cerr << "    "<< other.p->expression->__str__() << std::endl; ; 
-}
 
 } // namespace codegenvar
