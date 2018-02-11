@@ -9,7 +9,7 @@ namespace internal {struct BooleanEvaluatorPrivate;}
 struct BooleanEvaluator
 {
     BooleanEvaluator();
-    bool isFullyEvaluated()const;
+    bool isFullyEvaluated();
     
 private:
     friend struct internal::BooleanEvaluatorPrivate;

@@ -51,20 +51,21 @@ struct ConditionalTree
 
     struct Child{
         std::unique_ptr<ConditionalTree> node;
-        RCP<const Basic> leaf;
+
+        bool visited = false;
+        bool isNull()const
+        {
+            return !visited && !node;
+        }
         bool isFullyEvaluated()const
         {
-            if (!leaf.is_null())
-                return true;
-            if (node)
-                return node->isFullyEvaluated();
-            return false;
+            return visited || (node && node->isFullyEvaluated());
         }
     }branch[2];
     
     bool isFullyEvaluated()const;
     bool isEvaluated(const Iterator& address)const;
-    void insert(const Iterator& address, RCP<const Basic> expr);
+    void visit(const Iterator& address);
 };
 
 struct BooleanEvaluatorPrivate

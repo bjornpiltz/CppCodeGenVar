@@ -47,7 +47,7 @@ struct SnavelyReprojectionError
         ) const 
     {
         // Rotate P around R and translate by T:    
-        const Vec3 p = rotate(R, P)+T;
+        const Vec3 p = rotate(R, P) + T;
   
         // Compute the center of distortion.
         const Vec2 cx = -p.hnormalized();

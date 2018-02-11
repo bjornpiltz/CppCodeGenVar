@@ -8,6 +8,8 @@
 namespace codegenvar {
 
 using internal::BooleanEvaluatorPrivate;
+using internal::True;
+using internal::False;
 using SymEngine::boolTrue;
 using SymEngine::down_cast;
 using SymEngine::integer;
@@ -132,22 +134,20 @@ bool ConditionalTree::isEvaluated(const Iterator& address)const
     return child.node && child.node->isEvaluated(Iterator(address.begin()+1, address.end()));
 }
 
-void ConditionalTree::insert(const Iterator& address, SymExpr expr)
+void ConditionalTree::visit(const Iterator& address)
 {
     ASSERT(!address.empty());
     auto& child = branch[address.front().value];
     if (address.size()==1)
     {
-        CONDITION(!child.node, "It seems the function tested is not deterministic. (1)");
-        if (!child.leaf.is_null())
-            CONDITION(expr->__eq__(*child.leaf), "It seems the function tested is not deterministic. (2)");
-        else
-            child.leaf = expr;
+        CONDITION(!child.node, "It seems the function tested is not deterministic.");
+        child.visited = true;
         return;
     }
     if(!child.node)
         child.node = std::unique_ptr<ConditionalTree>(new ConditionalTree);
-    child.node->insert(Iterator(address.begin()+1, address.end()), expr);
+
+    child.node->visit(Iterator(address.begin()+1, address.end()));
 }
 
 } // namespace internal
@@ -161,9 +161,8 @@ Symbol& Symbol::operator|=(const Symbol& symbol)
     auto condition = evaluator->getCurrentContext();
     if (condition.is_null())
         return *this = symbol;
-    
 
-    evaluator->evaluated.insert(evaluator->currentContext, symbol.p->expression);    
+    evaluator->evaluated.visit(evaluator->currentContext);
     
     if (evaluator->evaluated.isFullyEvaluated())
         condition = boolTrue;
@@ -184,25 +183,16 @@ Symbol& Symbol::operator|=(const Symbol& symbol)
             std::cerr << "Warning: overwriting expression: " << p->expression->__str__() << std::endl;
         std::swap(q, p->expression);
     }
-    evaluator->currentContext = {};
     return *this;
 }
 
-bool BooleanEvaluator::isFullyEvaluated()const
+bool BooleanEvaluator::isFullyEvaluated()
 {
-    return p->evaluated.isFullyEvaluated();
+    if(p->evaluated.branch[True].isNull() && p->evaluated.branch[False].isNull())
+        return p->currentContext.empty();
+    bool result = p->evaluated.isFullyEvaluated();
+    p->currentContext = {};
+    return result;
 }
-
-bool Symbol::isFullyEvaluated()const
-{
-    if (is_a<Piecewise>(*p->expression))
-    {
-        const Piecewise& piecewise = down_cast<const Piecewise&>(*p->expression);
-        ASSERT(piecewise.get_vec().size()!=0);
-        auto pair = piecewise.get_vec().back();
-        return pair.second->__eq__(*boolTrue);
-    }
-    return true;
-}
-
+  
 } // namespace codegenvar

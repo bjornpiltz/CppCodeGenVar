@@ -39,7 +39,6 @@ public:
     Symbol expanded()const;
 
     bool equals(const Symbol& other)const;
-    bool isFullyEvaluated()const;
     
     // Unary '-':
     friend Symbol operator-(const Symbol& x);
