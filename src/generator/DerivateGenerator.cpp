@@ -1,5 +1,4 @@
 #include <codegenvar/generator/DerivateGenerator.h>
-#include "Error.h"
 #include "SymbolPrivate.h"
 #include <symengine/derivative.h>
 

@@ -39,6 +39,7 @@ public:
     Symbol expanded()const;
 
     bool equals(const Symbol& other)const;
+    bool isFullyEvaluated()const;
     
     // Unary '-':
     friend Symbol operator-(const Symbol& x);
@@ -54,8 +55,6 @@ public:
     Symbol& operator*=(const Symbol& other);
     Symbol& operator/=(const Symbol& other);
         
-    Symbol inverse()const;
-    
     // Unary functions:
     
     friend Symbol abs(const Symbol&);
@@ -98,8 +97,9 @@ public:
     Symbol& operator-=(const Scalar& other);
     Symbol& operator*=(const Scalar& other);    
     Symbol& operator/=(const Scalar& other);
-
+    
     friend Symbol pow(const Symbol&, const Scalar&);
+    friend Symbol pow(const Scalar&, const Symbol&);
     
     friend bool operator ==(const Symbol& lhs, const Scalar& rhs);
     friend bool operator ==(const Scalar& lhs, const Symbol& rhs);
@@ -122,18 +122,21 @@ public:
     Symbol(const Symbol&);
     Symbol(Symbol&&);
     Symbol& operator=(const Symbol&);
+    Symbol& operator|=(const Symbol&);
     Symbol& operator=(Symbol&&);
     void swap(Symbol& other);
 
 private:
     friend class internal::SymbolPrivate;
     std::unique_ptr<class internal::SymbolPrivate> p;
-    
+    Symbol(std::unique_ptr<class internal::SymbolPrivate>&&);
+
 private:
     friend struct CodeGenerator;
     friend struct DerivateEvaluator;
     friend struct NumericalEvaluator;
     friend struct StringEvaluator;
+    friend struct BooleanEvaluator;
 };
 
 }// namespace codegenvar

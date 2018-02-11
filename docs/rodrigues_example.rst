@@ -77,4 +77,4 @@ their expanded form, which is identical for both expressions.
        :start-after: The two expressions are equal.
 
 You can find the full source code of this example `here 
-<https://github.com/bjornpiltz/CppCodeGenVar/blob/master/examples/rotation.cpp>`_.
+<https://github.com/bjornpiltz/CppCodeGenVar/blob/master/examples/rodrigues.cpp>`_.

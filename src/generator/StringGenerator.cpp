@@ -1,20 +1,24 @@
 #include <codegenvar/generator/StringGenerator.h>
 #include "SymbolPrivate.h"
-#include "Error.h"
 #include <symengine/printer.h>
 
 namespace codegenvar{
 
 namespace internal{
 
+using SymEngine::And;
+using SymEngine::Or;
+using SymEngine::boolTrue;
 using SymEngine::StrPrinter;
 using SymEngine::BaseVisitor;
 using SymEngine::rational;
 using SymEngine::integer;
+using SymEngine::is_a;
 using SymEngine::PrecedenceEnum;
 using SymEngine::FunctionSymbol;
 using SymEngine::Function;
 using SymEngine::Basic;
+using SymEngine::Piecewise;
 
 // The purpose of this class is to replace some naming conventions
 // unusual to coders, like a**x -> pow(a, x).
@@ -54,6 +58,51 @@ public:
         std::ostringstream o;
         o << name << "("  << this->apply(x.get_args()) << ")";
         str_ = o.str();
+    }
+    void bvisit(const Piecewise &x)
+    { 
+        std::string tabs(" ");
+        std::ostringstream s;
+        auto vec = x.get_vec();
+        bool hasElse = vec.back().second->__eq__(*boolTrue);
+        int size =  hasElse ? vec.size()-1 : vec.size();
+        for (int i = 0; i< size; i++)
+        {
+            s << apply(vec[i].second);
+            s << "\n" << tabs << "? ";
+            s << apply(vec[i].first);
+            s << "\n" << tabs << ": ";
+            tabs += "  ";
+        }
+        if (hasElse)
+            s << apply(vec.back().first);
+        else
+            s << "<undefined>";
+        str_ = s.str(); 
+    }
+    void bvisit(const And &x)
+    {
+        std::ostringstream s;
+        auto container = x.get_container();
+        s << apply(*container.begin());
+        for (auto it = ++(container.begin()); it != container.end(); ++it)
+        {
+            if (is_a<Or>(**it))
+                s << " && " << "(" << apply(*it) << ")";
+            else
+                s << " && " << apply(*it);
+        }
+        str_ = s.str();
+    }
+    
+    void bvisit(const Or &x)
+    {
+        std::ostringstream s;
+        auto container = x.get_container();
+        s << apply(*container.begin());
+        for (auto it = ++(container.begin()); it != container.end(); ++it)
+            s << " || " << apply(*it);
+        str_ = s.str();
     }
 };
 
