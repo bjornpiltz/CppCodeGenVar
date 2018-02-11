@@ -8,7 +8,15 @@
 namespace codegenvar {
 
 using internal::BooleanEvaluatorPrivate;
-    
+using SymEngine::boolTrue;
+using SymEngine::down_cast;
+using SymEngine::integer;
+using SymEngine::is_a;
+using SymEngine::Piecewise;
+using SymEngine::PiecewiseVec;
+using SymEngine::piecewise;
+using SymEngine::RCP;
+
 std::shared_ptr<internal::BooleanEvaluatorPrivate> BooleanEvaluator::p;
 
 BooleanEvaluator::BooleanEvaluator()
@@ -21,26 +29,6 @@ BooleanEvaluator::BooleanEvaluator()
 std::weak_ptr<internal::BooleanEvaluatorPrivate> BooleanEvaluator::get()
 {
     return p;
-}
-
-bool BooleanEvaluator::done() const
-{
-   /* if (p->currentContext.empty())
-        return true;
-     
-    p->evaluated.insert(p->currentContext, SymEngine::integer(1));
-
-    p->currentContext = {};
-    bool isDone = p->evaluated.isFullyEvaluated();
-    if (isDone)
-    {
-        int sdfsdf  = 0;
-    }
-    return isDone;
-    
-    
-    */
-    return false;
 }
 
 bool operator ==(const Symbol& lhs, const Symbol& rhs)
@@ -72,7 +60,7 @@ bool BooleanEvaluatorPrivate::handle(const SymbolPrivate *lhs, const SymbolPriva
     
     if (!is_a_Number(*diff))
         ERROR("Your code contains conditional branches, but you haven't "
-              "created a boolean evaluator. See <doc> for details.");     
+              "created a boolean evaluator. See <doc> for details.");     // TODO: link
     
     if (op == EQ)
         return down_cast<const Number &>(*diff).is_zero();
@@ -104,46 +92,17 @@ bool BooleanEvaluatorPrivate::handle(SymExpr lhs, SymExpr rhs, Op op)
     case GT: condition = Gt(lhs, rhs); break;
     }
     
-for(int i = 0; i< currentContext.size(); i++)
-    std::cerr << "    ";
-
     currentContext.emplace_back(condition, True);
     if (!evaluated.isEvaluated(currentContext))
-    {
-// std::cerr << "if( " << condition->__str__() << " == true)" << std::endl;
         return true;
-    }
+
     currentContext.back().value = False;
     if (!evaluated.isEvaluated(currentContext))
-    {
-// std::cerr << "if( " << condition->__str__() << " != true)" << std::endl;
         return false;
-    }
     
 std::cerr << "TODO: Should i be here?" << std::endl;
 
     return false;
-}
-
-bool BooleanEvaluatorPrivate::done(SymExpr expr)
-{
-    if (currentContext.empty())
-        return true;
-     
-    evaluated.insert(currentContext, expr);
-
-    
-for(int i = 0; i< currentContext.size(); i++)
-    std::cerr << "    ";
-std::cerr << expr->__str__() << std::endl;
-
-    currentContext = {};
-    bool isDone = evaluated.isFullyEvaluated();
-    if (isDone)
-    {
-        int sdfsdf  = 0;
-    }
-    return isDone;
 }
 
 RCP<const Boolean> BooleanEvaluatorPrivate::getCurrentContext()const
@@ -153,17 +112,11 @@ RCP<const Boolean> BooleanEvaluatorPrivate::getCurrentContext()const
 
     set_boolean set;
     for (auto branch : currentContext)
-    {
-        if (branch.value==True)
-            set.insert(branch.condition);
-        else
-            set.insert(branch.condition->logical_not());
-    }
-    // TODO: check final else:
-    // TODO: std::cerr << logical_and(set)->__str__() << std::endl;
+        set.insert(branch.value==True 
+                 ? branch.condition
+                 : branch.condition->logical_not());
     return logical_and(set);
 }
-
 
 bool ConditionalTree::isFullyEvaluated()const
 {
@@ -198,5 +151,58 @@ void ConditionalTree::insert(const Iterator& address, SymExpr expr)
 }
 
 } // namespace internal
+
+Symbol& Symbol::operator|=(const Symbol& symbol)
+{
+    auto evaluator = BooleanEvaluator::get().lock();
+    if (!evaluator)
+        return *this = symbol;
+     
+    auto condition = evaluator->getCurrentContext();
+    if (condition.is_null())
+        return *this = symbol;
+    
+
+    evaluator->evaluated.insert(evaluator->currentContext, symbol.p->expression);    
+    
+    if (evaluator->evaluated.isFullyEvaluated())
+        condition = boolTrue;
+
+    auto q = piecewise({ {symbol.p->expression, condition} });
+    if (is_a<Piecewise>(*p->expression))
+    {
+        const Piecewise& piecewise = down_cast<const Piecewise&>(*p->expression);
+        PiecewiseVec vec = piecewise.get_vec();
+        ASSERT(vec.size()!=0);
+        // TODO: check if vec already contains condition
+        vec.emplace_back(std::make_pair(symbol.p->expression, condition));
+        p->expression = SymEngine::piecewise(std::move(vec));
+    }
+    else
+    {
+        if (!p->expression->__eq__(*integer(0)))
+            std::cerr << "Warning: overwriting expression: " << p->expression->__str__() << std::endl;
+        std::swap(q, p->expression);
+    }
+    evaluator->currentContext = {};
+    return *this;
+}
+
+bool BooleanEvaluator::isFullyEvaluated()const
+{
+    return p->evaluated.isFullyEvaluated();
+}
+
+bool Symbol::isFullyEvaluated()const
+{
+    if (is_a<Piecewise>(*p->expression))
+    {
+        const Piecewise& piecewise = down_cast<const Piecewise&>(*p->expression);
+        ASSERT(piecewise.get_vec().size()!=0);
+        auto pair = piecewise.get_vec().back();
+        return pair.second->__eq__(*boolTrue);
+    }
+    return true;
+}
 
 } // namespace codegenvar

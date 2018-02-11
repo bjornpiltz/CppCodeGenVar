@@ -54,7 +54,11 @@ struct ConditionalTree
         RCP<const Basic> leaf;
         bool isFullyEvaluated()const
         {
-            return !leaf.is_null() || (node && node->isFullyEvaluated());
+            if (!leaf.is_null())
+                return true;
+            if (node)
+                return node->isFullyEvaluated();
+            return false;
         }
     }branch[2];
     
@@ -69,9 +73,7 @@ struct BooleanEvaluatorPrivate
 
     static bool handle(const SymbolPrivate* lhs, const SymbolPrivate* rhs, Op op);
     bool handle(RCP<const Basic> lhs, RCP<const Basic> rhs, Op op);
-    bool done(RCP<const Basic> expr);
 
-    typedef std::unique_ptr<ConditionalTree> EvaluatedBooleans;
     ConditionalTree evaluated;
     ConditionalTree::Iterator currentContext;
     

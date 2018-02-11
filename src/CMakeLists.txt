@@ -23,6 +23,7 @@ set(SRCS
 )
 
 set(INTERNALS
+  BooleanEvaluatorPrivate.h
   Error.h
   SymbolPrivate.h
 )

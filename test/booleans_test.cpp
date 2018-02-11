@@ -1,6 +1,8 @@
+#include "test_helper.h"
 #include <codegenvar/Symbol.h>
 #include <codegenvar/BooleanEvaluator.h>
-#include <gtest/gtest.h>
+
+#define COMPARE( a, result) EXPECT_EQ(wo_ws(result), wo_ws((a).toString()))
 
 using namespace codegenvar;
 
@@ -131,5 +133,14 @@ GTEST_TEST(booleans, a)
     do
     {
         z |= testFun(x, y);
-    }while (!z.isFullyEvaluated());
+    }while (!evaluator.isFullyEvaluated());
+    
+    COMPARE(z,STRINGIFY(
+     x == y
+     ? x
+     : x < 3 && x != y
+       ? 3 + x + y
+       : 3 <= x && 3 < x && x != y
+         ? 0.0
+         : x - y));
 }

@@ -10,7 +10,6 @@ using namespace codegenvar;
 
 int main()
 {
-    
     SnavelyReprojectionError<Symbol> function(Symbol("obs_x"), Symbol("obs_y"));
     std::vector<Symbol> vars;
     for(auto v: {
@@ -25,11 +24,13 @@ int main()
     BooleanEvaluator evaluator;
     do
     {
-        function(&vars[0], &vars[9], residuals);
+        Symbol tmp[2];
+        function(&vars[0], &vars[9], tmp);
+        residuals[0] |= tmp[0];
+        residuals[1] |= tmp[1];
     }
-    while (!residuals[0].isFullyEvaluated()
-        && !residuals[1].isFullyEvaluated());
-    
+    while (!evaluator.isFullyEvaluated());
+
     DerivateEvaluator evaluate;
     evaluate.options.constants.insert({"obs_x", "obs_y"});
     

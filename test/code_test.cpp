@@ -1,24 +1,9 @@
+#include "test_helper.h"
 #include <codegenvar/Symbol.h>
-#include <gtest/gtest.h>  
-#include <cctype>
 
 using codegenvar::Symbol;
 
-inline std::string wo_ws(std::string a)
-{
-    while (!a.empty() && std::isspace(a[0]))
-        a = a.substr(1);
-    
-    while (!a.empty() && std::isspace(a[a.size()-1]))
-        a = a.substr(0, a.size()-1);    
-    for (auto it = a.begin(); it != a.end(); ++it)
-        if (std::iscntrl(*it))
-            *it = ' ';
-    return a;
-}
-
-#define COMPARE( a, result) EXPECT_EQ(wo_ws(result), wo_ws((a).toCode()))
-#define STRINGIFY(code)  #code
+#define COMPARE( a, result) EXPECT_EQ(trim(result), trim((a).toCode()))
 
 GTEST_TEST(code, a)
 {
