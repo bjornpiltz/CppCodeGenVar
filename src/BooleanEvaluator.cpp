@@ -144,6 +144,7 @@ void ConditionalTree::visit(const Iterator& address)
     }
     if(!child.node)
         child.node = std::unique_ptr<ConditionalTree>(new ConditionalTree);
+
     child.node->visit(Iterator(address.begin()+1, address.end()));
 }
 
@@ -189,17 +190,5 @@ bool BooleanEvaluator::isFullyEvaluated()
     p->currentContext = {};
     return result;
 }
-
-bool Symbol::isFullyEvaluated()const
-{
-    if (is_a<Piecewise>(*p->expression))
-    {
-        const Piecewise& piecewise = down_cast<const Piecewise&>(*p->expression);
-        ASSERT(piecewise.get_vec().size()!=0);
-        auto pair = piecewise.get_vec().back();
-        return pair.second->__eq__(*boolTrue);
-    }
-    return true;
-}
-
+  
 } // namespace codegenvar

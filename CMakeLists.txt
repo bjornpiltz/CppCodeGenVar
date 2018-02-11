@@ -51,5 +51,5 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/CppCodeGenVarConfig.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/CppCodeGenVarConfigVersion.cmake
         DESTINATION cmake )
-      
+
 install(EXPORT CppCodeGenVarExport DESTINATION cmake FILE CppCodeGenVarTargets.cmake )

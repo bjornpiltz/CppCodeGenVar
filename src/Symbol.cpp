@@ -1,6 +1,5 @@
 #include <codegenvar/Symbol.h>
 #include "SymbolPrivate.h"
-#include "Error.h"
 #include <symengine/add.h>
 #include <symengine/functions.h>
 #include <symengine/visitor.h>
@@ -133,12 +132,6 @@ Symbol& Symbol::operator /= (const Symbol& other)
     return *this;
 }
 
-// Unary div
-Symbol Symbol::inverse()const 
-{  
-    return SymbolPrivate::ctor(div(integer(1), p->expression));
-}
-
 Symbol Symbol::resolved(const Symbol::Map& symbolMap) const
 {
     CONDITION(!p->expression.is_null(), "Symbol is uninitialized");
@@ -185,6 +178,7 @@ Symbol& Symbol::operator *= (const Scalar& other){ return *this *= Symbol(other)
 Symbol& Symbol::operator /= (const Scalar& other){ return *this /= Symbol(other);}
 
 Symbol pow(const Symbol&x, const Scalar& y){return pow(x, Symbol(y));}
+Symbol pow(const Scalar&x, const Symbol& y){return pow(Symbol(x), y);}
 
 
 bool operator ==(const Symbol& lhs, const Scalar& rhs){ return (lhs) == Symbol(rhs); }
@@ -237,11 +231,6 @@ Symbol operator -(const Symbol& value)
     return SymbolPrivate::ctor(sub(integer(0), value.p->expression));
 }
 
-// TODO: implement boolean logic.
-bool operator ==(const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
-bool operator < (const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
-bool operator > (const Symbol& lhs, const Symbol& rhs){ ERROR("Boolean logic is not supported yet.");}
-
 bool operator !=(const Symbol& lhs, const Symbol& rhs){ return !(lhs == rhs);}
 bool operator <=(const Symbol& lhs, const Symbol& rhs){ return !(lhs  > rhs);}
 bool operator >=(const Symbol& lhs, const Symbol& rhs){ return !(lhs  < rhs);}
@@ -251,26 +240,30 @@ std::ostream& operator<<(std::ostream& os, const Symbol& a)
     return os << a.toString();
 }
 
+Symbol::Symbol(std::unique_ptr<SymbolPrivate>&& other)
+    : p(std::move(other))
+{
+}
+
 Symbol::Symbol()
-    : p(new SymbolPrivate)
+    : Symbol(std::unique_ptr<SymbolPrivate>(new SymbolPrivate))
 {   
     p->expression = integer(0);
 }
 
 Symbol::Symbol(const Symbol& other)
-    : p(new SymbolPrivate(*other.p))
+    : Symbol(std::unique_ptr<SymbolPrivate>(new SymbolPrivate(*other.p)))
 {
 }
 
 Symbol::Symbol(Symbol&& other)
-    : p(std::move(other.p))
+    : Symbol(std::move(other.p))
 {   
 }
 
 Symbol& Symbol::operator=(const Symbol& other)
 {
-    Symbol(other).p.swap(p);
-    return *this;
+    return *this=Symbol(other);
 }
 
 Symbol& Symbol::operator=(Symbol&& other)

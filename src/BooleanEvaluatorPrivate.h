@@ -51,6 +51,7 @@ struct ConditionalTree
 
     struct Child{
         std::unique_ptr<ConditionalTree> node;
+
         bool visited = false;
         bool isFullyEvaluated()const
         {
