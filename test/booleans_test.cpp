@@ -6,61 +6,6 @@
 
 using namespace codegenvar;
 
-void v1 (double x, double y, double z)
-{
-    bool a = (x==y);
-    bool b = (x<3);
-    bool c = (x>3);
-    
-    if (a)
-    {
-        z = x;
-    }
-    else
-    {
-        if (b)
-        {
-            z = x+y+3;
-        }
-        else
-        {
-            
-            if (c)
-            {
-                z = 0.0;
-            }
-            else
-            {
-                z =  x-y;
-            }
-        }
-    }
-}
-
-void v2 (double x, double y, double z)
-{
-    bool a = (x==y);
-    bool b = !(x==y) && (x<3);
-    bool c = !(x==y) &&!(x<3) &&(x>3);
-    
-    if (a)
-    {
-        z = x;
-    }
-    else if (b)
-    {
-        z = x+y+3;
-    }
-    else if (c)
-    {
-        z = 0.0;
-    }
-    else
-    {
-        z =  x-y;
-    }
-}
-
 Symbol testFun(const Symbol& x, const Symbol& y)
 {
     if (x==y)
@@ -116,18 +61,16 @@ GTEST_TEST(booleans, uninitialized)
     EXPECT_EQ(x <= x, true);
     EXPECT_EQ(x >= x, true);    
 }
+
 GTEST_TEST(booleans, a)
 {
-    Symbol x("x"), y("y"), c1(1);
+    Symbol x("x"), y("y");
 
-    EXPECT_TRUE(c1.isFullyEvaluated());
-    EXPECT_TRUE(x.isFullyEvaluated());
-    EXPECT_TRUE((x+y+3).isFullyEvaluated());
-    
     Symbol tmp;
-    EXPECT_TRUE((tmp|=(x+y+3)).isFullyEvaluated());
+    tmp |= x+y+3;
+    COMPARE(tmp, "3+x+y");
     BooleanEvaluator evaluator;
-    EXPECT_TRUE((tmp|=(x+y+3)).isFullyEvaluated());
+    EXPECT_TRUE(evaluator.isFullyEvaluated());
     EXPECT_TRUE(tmp.equals(x+y+3));
     Symbol z;
     do

@@ -8,6 +8,8 @@
 namespace codegenvar {
 
 using internal::BooleanEvaluatorPrivate;
+using internal::True;
+using internal::False;
 using SymEngine::boolTrue;
 using SymEngine::down_cast;
 using SymEngine::integer;
@@ -186,6 +188,8 @@ Symbol& Symbol::operator|=(const Symbol& symbol)
 
 bool BooleanEvaluator::isFullyEvaluated()
 {
+    if(p->evaluated.branch[True].isNull() && p->evaluated.branch[False].isNull())
+        return p->currentContext.empty();
     bool result = p->evaluated.isFullyEvaluated();
     p->currentContext = {};
     return result;

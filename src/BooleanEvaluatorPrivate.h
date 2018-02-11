@@ -53,13 +53,13 @@ struct ConditionalTree
         std::unique_ptr<ConditionalTree> node;
 
         bool visited = false;
+        bool isNull()const
+        {
+            return !visited && !node;
+        }
         bool isFullyEvaluated()const
         {
-            if (visited)
-                return true;
-            if (node)
-                return node->isFullyEvaluated();
-            return false;
+            return visited || (node && node->isFullyEvaluated());
         }
     }branch[2];
     
