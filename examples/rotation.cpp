@@ -1,5 +1,6 @@
 #include "SnavelyReprojectionError.h"
 #include <codegenvar/Symbol.h>
+#include <codegenvar/BooleanEvaluator.h>
 #include <iostream>
 #include <vector>
 
@@ -16,10 +17,19 @@ int main()
     )
         vars.emplace_back(v);
     
-    Symbol residuals[2];;
-    function(&vars[0], &vars[9], residuals);
+    BooleanEvaluator evaluator;
+    Symbol residuals[2];
+    do
+    {
+        Symbol tmp[2];
+        function(&vars[0], &vars[9], tmp);
+        residuals[0] |= tmp[0];
+        residuals[1] |= tmp[1];
+    }
+    while (!evaluator.isFullyEvaluated());
     
     std::cerr << "res1 := " << residuals[0].toString() << std::endl << std::endl;
     std::cerr << "res2 := " << residuals[1].toString() << std::endl;
+    
     return 0;
 }
