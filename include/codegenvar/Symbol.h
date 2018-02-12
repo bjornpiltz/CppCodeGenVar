@@ -1,6 +1,7 @@
 #pragma once
 #include "Scalar.h"
 #include <map>
+#include <array>
 #include <memory>
 #include <set>
 #include <string>
@@ -27,6 +28,12 @@ public:
     // Constructors creating variables or named constants.
     explicit Symbol(const std::string&);
     
+    // Constructor creating an array of symbols.
+    template <class... Args> 
+    static std::array<Symbol, sizeof...(Args)> Array(Args... args)
+    {
+        return {Symbol{args}...};
+    }
     std::string toString()const;
     std::string toCode()const;
     double toDouble()const;

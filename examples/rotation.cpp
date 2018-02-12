@@ -4,21 +4,19 @@
 #include <iostream>
 #include <vector>
 
+using namespace codegenvar;
+
 int main()
 {
-    using namespace codegenvar;
     SnavelyReprojectionError<Symbol> function(Symbol("obs_x"), Symbol("obs_y"));
-    std::vector<Symbol> vars;
-    for(auto v: {
+    auto vars = Symbol::Array(
           "r1", "r2", "r3", 
           "t1", "t2", "t3",
           "f" , "l1", "l2",
-          "p1", "p2", "p3"}
-    )
-        vars.emplace_back(v);
+          "p1", "p2", "p3");
     
-    BooleanEvaluator evaluator;
     Symbol residuals[2];
+    BooleanEvaluator evaluator;
     do
     {
         Symbol tmp[2];
