@@ -19,18 +19,21 @@ public:
     using CodePrinter::apply;
     using CodePrinter::bvisit;
     
-    int varCounter = 0;
-    std::map<std::string, std::string> exp2var;
-    std::map<std::string , std::string> var2code;
-    
-    void assignToVar(const Basic& x, const char* name)
+    int varCounter = -1;
+    std::map<std::string, int> exp2var;
+    std::map<int, std::string> var2code;
+    std::string varName(int var)const
+    {
+        return tempPrefix + std::to_string(var);
+    }
+    int assignToVar(const Basic& x, const char* name)
     {
         std::string expression = x.__str__();
-        std::string var;
+        int var = -1;
         auto it = exp2var.find(expression);
         if (it == exp2var.end())
         {
-            exp2var[expression] = var = tempPrefix + std::to_string(varCounter++);
+            var2code[exp2var[expression] = var = ++varCounter] = str_;
             DEBUG_OUTPUT(std::cerr << "ASSIGN " << var << ": " << str_ << " (" << name << ")" << std::endl);
         }
         else
@@ -38,8 +41,8 @@ public:
             var = it->second;
             DEBUG_OUTPUT(std::cerr << "Found " << var << " = " << expression << " (" << name << ")" << std::endl);
         }
-        var2code[var] = str_;
-        str_ = var;
+        str_ = varName(var);
+        return var;
     }
     void _print_pow(std::ostringstream &o, const RCP<const Basic> &a,
                     const RCP<const Basic> &b)
@@ -56,6 +59,14 @@ public:
         assignToVar(Pow(a, b), "_print_pow");
         o << str_;
     }
+    int apply2(const RCP<const Basic> &b)
+    {
+        b->accept(*this);
+        if(varCounter==-1)
+            var2code[exp2var[b->__str__()] = ++varCounter] = str_;
+        return varCounter;
+    }
+
 #define PROCESS(name) void bvisit(const name &x)\
     {\
         CodePrinter:: bvisit(x);\
@@ -133,18 +144,26 @@ std::string CodeGenerator::operator()(const Symbol& symbol)const
 {
     SymEngine::internal::CodePrinter2 printer;
     printer.tempPrefix = options.tempPrefix;
-    auto output = printer.apply(symbol.p->expression);
+    int var = printer.apply2(symbol.p->expression);
+    std::string output = printer.varName(var);
 
-    auto it = printer.var2code.find(output);
+    /*
+     * Remove one indirection: 
+     *   double tmp0 = 1.0;
+     *   out = tmp0
+     * becomes
+     *   out = 1.0
+     */
+    auto it = printer.var2code.find(var);
     if (it != printer.var2code.end())
     {
-        output = printer.var2code.at(output);
+        output = printer.var2code.at(var);
         printer.var2code.erase(it);
     }
-        
+
     std::string result;    
     for (auto it: printer.var2code)
-        result += options.varDeclaration + " " + it.first + " = " + it.second + ";\n";
+        result += options.varDeclaration + " " + printer.varName(it.first) + " = " + it.second + ";\n";
     
     result += options.varName + " = " + output + ";\n";
     return result;
