@@ -69,14 +69,14 @@ namespace codegenvar
      * creates a vector with symbols named "x_1" and "x_2".
      */
     template <int n = -1>
-    Eigen::Matrix<Symbol, n, 1> namedVector(std::string name, int size = -1)
+    Eigen::Matrix<Symbol, n, 1> namedVector(const std::string& name, int size = -1)
     {
         Eigen::Matrix<Symbol, n, 1> result(n == -1 ? size : n);
         for (int i= 0; i<n; i++)
             result(i) = Symbol(name + "_" + std::to_string(i+1));
         return result;
     }
-    Mat namedMatrix(std::string name, int rows, int cols)
+    Mat namedMatrix(const std::string& name, int rows, int cols)
     {
         Mat result(rows, cols);
         for (int r = 0; r<rows; r++)
