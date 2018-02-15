@@ -25,7 +25,7 @@ public:
                         const std::size_t lineNumber)
 {
    std::ostringstream stream;
-   stream << "EXCEPTION: " << msg << ", file " << fileName << " line " << lineNumber;
+   stream << "EXCEPTION: " << msg << "\n" << fileName << " line " << lineNumber;
    throw SymbolError(stream.str());
 }
 

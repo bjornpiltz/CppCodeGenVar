@@ -48,7 +48,7 @@ but the function ``Symbol::equals(const Symbol&)`` tests for mathematical equiva
 
     .. literalinclude:: ../examples/rodrigues.cpp
        :language: c++
-       :start-after: std::cerr << "\nEigen
+       :start-after: std::cout << "\nEigen
        :end-before:  // If we convert
 	   
   .. tab:: Output

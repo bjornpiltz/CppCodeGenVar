@@ -33,12 +33,12 @@ int main()
     
     auto dx = evaluate(residuals[0]);
     for(auto var: residuals[0].getVariableNames())
-        std::cerr << "dx/d" << var << " :\n" << CodeGenerator("dx_d" + var)(dx[var]) << std::endl << std::endl;
-    std::cerr << std::endl;
+        std::cout << "dx/d" << var << " :\n" << CodeGenerator("dx_d" + var)(dx[var]) << std::endl << std::endl;
+    std::cout << std::endl;
 
     auto dy = evaluate(residuals[1]);
     for(auto var: residuals[1].getVariableNames())
-        std::cerr << "dy/d" << var << " :\n" << CodeGenerator("dy_d" + var)(dy[var]) << std::endl << std::endl;
+        std::cout << "dy/d" << var << " :\n" << CodeGenerator("dy_d" + var)(dy[var]) << std::endl << std::endl;
     
     return 0;
 }

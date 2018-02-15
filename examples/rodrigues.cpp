@@ -32,27 +32,27 @@ int main()
 
     // Use Rodrigues' rotation formula to calculate the rotation of the point:
     rotate_rodrigues(axis, angle, point, r1);
-    std::cerr << "Rodrigues:\n" << r1 << std::endl;
+    std::cout << "Rodrigues:\n" << r1 << std::endl;
 
     // Use Eigen to calculate the rotation of the point:
     Vec3 r = Eigen::AngleAxis<Symbol>(angle, axis)*point;
-    std::cerr << "\nEigen:\n"  << r << std::endl;
+    std::cout << "\nEigen:\n"  << r << std::endl;
     
     // Check for mathematical equality:
-    std::cerr << "\nThe two expressions are " 
+    std::cout << "\nThe two expressions are " 
               << (equals(r1, r) ? "equal" : "not equal") 
               << "." << std::endl;
 
     // If we convert all expressions to their expanded form, we can see that they are identical.
-    std::cerr << "\nExpanded:\n";
+    std::cout << "\nExpanded:\n";
     for (int i = 0; i < 3; i++)
     {
         r1(i).expand();
         r(i).expand();
     }
 
-    std::cerr << "\nRodrigues:\n" << r1 << std::endl;
-    std::cerr << "\nEigen:\n"  << r << std::endl;
+    std::cout << "\nRodrigues:\n" << r1 << std::endl;
+    std::cout << "\nEigen:\n"  << r << std::endl;
 
     return 0;
 }

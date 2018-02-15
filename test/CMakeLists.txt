@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-# Add the gtest library
+# Add the gtest library.
 include_directories(${PROJECT_SRC_DIR}/third_party/googletest/googletest/include)
 include_directories(${PROJECT_SRC_DIR}/third_party/googletest/googletest)
 add_library(gtest 
@@ -12,6 +12,7 @@ find_package(Threads REQUIRED)
 target_link_libraries(gtest Threads::Threads)
 set_target_properties(gtest PROPERTIES FOLDER "Libraries")
 
+# Add a target for `make check`.
 # https://cmake.org/Wiki/CMakeEmulateMakeCheck How to emulate GNU Autotools 'make check'
 find_program(CMAKE_CTEST_COMMAND ctest ${CMAKE_HOST_PATH} ${CMAKE_TARGET_PATH})
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -V -C $<CONFIGURATION>)
@@ -28,3 +29,17 @@ endmacro()
 wrap_test(symbol)
 wrap_test(code)
 wrap_test(booleans)
+
+if(CPPCODEGENVAR_EXAMPLES)
+	add_dependencies(check examples)
+endif()
+
+# Test that each example compiles and produces the correct output.
+foreach(example ${CPPCODEGENVAR_EXAMPLES})
+  add_test(NAME test_${example}
+      COMMAND ${CMAKE_COMMAND} 
+	    -D example_name=${example}
+	    -D test_cmd=$<TARGET_FILE:${example}> 
+	    -D output_blessed=${PROJECT_SRC_DIR}/docs/${example}.txt
+	    -P ${PROJECT_SRC_DIR}/test/test_example.cmake )
+endforeach()

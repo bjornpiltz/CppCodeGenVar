@@ -1,5 +1,8 @@
 version: 1.0.{build}
 
+init:
+  - git config --global core.autocrlf true
+
 matrix:
   fast_finish: false # set this flag to immediately finish build once one of the jobs fails.
 
