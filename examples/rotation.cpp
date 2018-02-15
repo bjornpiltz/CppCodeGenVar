@@ -26,8 +26,8 @@ int main()
     }
     while (!evaluator.isFullyEvaluated());
     
-    std::cerr << "res1 := " << residuals[0].toString() << std::endl << std::endl;
-    std::cerr << "res2 := " << residuals[1].toString() << std::endl;
+    std::cout << "res1 := " << residuals[0].toString() << std::endl << std::endl;
+    std::cout << "res2 := " << residuals[1].toString() << std::endl;
     
     return 0;
 }

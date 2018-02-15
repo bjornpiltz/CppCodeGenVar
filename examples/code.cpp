@@ -18,16 +18,16 @@ int main()
     generate.options.tempPrefix  = "v";
     generate.options.varName  = "z";
     
-    std::cerr << generate(Symbol(2)) << std::endl;
-    std::cerr << generate(y) << std::endl;
-    std::cerr << generate(-y) << std::endl;
-    std::cerr << generate(1/y) << std::endl;
-    std::cerr << generate(1/(1+y)) << std::endl;
-    std::cerr << generate(1/(2*y)) << std::endl;
-    std::cerr << generate(cos(1/y)) << std::endl;
-    std::cerr << generate(pow(cos(1/y), 3)) << std::endl;
-    std::cerr << generate(z) << std::endl;
-    std::cerr << generate(Symbol(2.0)) << std::endl;
+    std::cout << generate(Symbol(2)) << std::endl;
+    std::cout << generate(y) << std::endl;
+    std::cout << generate(-y) << std::endl;
+    std::cout << generate(1/y) << std::endl;
+    std::cout << generate(1/(1+y)) << std::endl;
+    std::cout << generate(1/(2*y)) << std::endl;
+    std::cout << generate(cos(1/y)) << std::endl;
+    std::cout << generate(pow(cos(1/y), 3)) << std::endl;
+    std::cout << generate(z) << std::endl;
+    std::cout << generate(Symbol(2.0)) << std::endl;
     
     return 0;
 }
