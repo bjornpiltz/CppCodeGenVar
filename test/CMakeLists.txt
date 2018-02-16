@@ -30,6 +30,11 @@ wrap_test(symbol)
 wrap_test(code)
 wrap_test(booleans)
 
+find_package(SymEngine CONFIG REQUIRED)
+include_directories(${SYMENGINE_INCLUDE_DIRS})
+wrap_test(condition_cache)
+target_link_libraries(condition_cache_test ${SYMENGINE_LIBRARIES})
+
 if(CPPCODEGENVAR_EXAMPLES)
 	add_dependencies(check examples)
 endif()

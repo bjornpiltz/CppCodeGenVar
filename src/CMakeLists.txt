@@ -15,6 +15,7 @@ set(HDRS
 
 set(SRCS 
   ${PROJECT_SRC_DIR}/src/BooleanEvaluator.cpp
+  ${PROJECT_SRC_DIR}/src/ConditionCache.cpp
   ${PROJECT_SRC_DIR}/src/Scalar.cpp
   ${PROJECT_SRC_DIR}/src/Symbol.cpp
   ${PROJECT_SRC_DIR}/src/generator/CodeGenerator.cpp
@@ -24,6 +25,7 @@ set(SRCS
 
 set(INTERNALS
   BooleanEvaluatorPrivate.h
+  ConditionCache.h
   Error.h
   SymbolPrivate.h
 )
