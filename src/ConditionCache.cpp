@@ -4,6 +4,8 @@
 #include <symengine/integer.h>
 #include <bitset>
 
+#define DEBUGGING_CONDITIONCACHE(a)
+
 namespace codegenvar {
 
 namespace internal {
@@ -24,25 +26,29 @@ static inline int mask(int op, bool on)
     }
 }
 
-static inline bool isMathematicallyEquivalent(RCP<const Basic> lhs, RCP<const Basic> rhs)
+static inline std::string toString(int mask)
 {
-    return eq(*expand(sub(lhs, rhs)), *integer(0));
+    switch (mask)
+    {
+    default:
+    case Invalid: return "?";
+    case Unknown: return "?";
+    case LT: return "<";
+    case EQ: return "==";
+    case LE: return "<=";
+    case GT: return ">";
+    case NE: return "!=";
+    case GE: return ">=";
+    }
 }
 
-void ConditionCache::insert(MathExpression lhs, MathExpression rhs, BooleanOp op, bool on)
+void ConditionCache::insert(MathExpression lhs, MathExpression rhs, int op, bool on)
 {
-    const auto key = sub(lhs, rhs);
+    const auto key = expand(sub(lhs, rhs));
     if (allowedStates.count(key)==0)
         allowedStates[key] = Unknown;
     allowedStates[key] &= mask(op, on);
-}
-
-void ConditionCache::insert(MathExpression lhs, MathExpression rhs, CompoundBooleanOp op, bool on)
-{
-    const auto key = sub(lhs, rhs);
-    if (allowedStates.count(key)==0)
-        allowedStates[key] = Unknown;
-    allowedStates[key] &= mask(op, on);
+    DEBUGGING_CONDITIONCACHE(std::cerr << "Setting " << key->__str__() << " " << toString(mask(op, on)) << " 0"<< std::endl);
 }
 
 bool ConditionCache::alreadyEvaluated(MathExpression lhs, MathExpression rhs, CompoundBooleanOp op, bool& value)const
@@ -62,27 +68,30 @@ bool ConditionCache::alreadyEvaluated(MathExpression lhs, MathExpression rhs, Co
 
 bool ConditionCache::alreadyEvaluated(MathExpression lhs, MathExpression rhs, BooleanOp op, bool& value)const 
 {
-    const auto key = sub(lhs, rhs);
+    const auto key = expand(sub(lhs, rhs));
+    DEBUGGING_CONDITIONCACHE(std::cerr << "Checking " << key->__str__() << " " << toString(op) << " 0");
     for (auto pair : allowedStates)
     {
+        int allowedState = 0;
         if (isMathematicallyEquivalent(pair.first, key))
-        {
-            int allowedState = pair.second;
-            value = allowedState&op;
-            if(value && std::bitset<3>(allowedState).count()>1)
-                return false;
-            return true; 
-        }
+            allowedState = pair.second;
         else if (isMathematicallyEquivalent(pair.first, neg(key)))
-        {
-            int allowedState = pair.second ^ (LT|GT);
-            value = allowedState&op;
-            if(value && std::bitset<3>(allowedState).count()>1)
-                return false;
-            return true; 
-        }
+            allowedState = pair.second ^ (LT|GT);
+        else
+            continue;
+
+        value = allowedState&op;
+        DEBUGGING_CONDITIONCACHE(std::cerr << " : true" << std::endl);
+        return !(value && std::bitset<3>(allowedState).count()>1);
     }
+    DEBUGGING_CONDITIONCACHE(std::cerr << " : false" << std::endl);
     return false;
+}
+
+bool ConditionCache::isMathematicallyEquivalent(MathExpression lhs, MathExpression rhs)
+{
+    // a == b iff a-b == 0
+    return eq(*expand(sub(lhs, rhs)), *integer(0));
 }
 
 } // namespace internal

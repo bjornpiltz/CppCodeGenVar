@@ -67,35 +67,34 @@ namespace internal {
 
 bool BooleanEvaluatorPrivate::handle(const SymbolPrivate *lhs, const SymbolPrivate *rhs, BooleanOp op)
 {
-    using namespace SymEngine;
-    auto evaluator = BooleanEvaluator::get().lock();
-    if (evaluator)
-        return evaluator->handle(lhs->expression, rhs->expression, op);
-    
     // See if the expression is constant.
     auto diff = sub(lhs->expression, rhs->expression);
-    
-    if (!is_a_Number(*diff))
+    if (is_a_Number(*diff))
+    {
+        if (op == EQ)
+            return down_cast<const Number &>(*diff).is_zero();
+
+        if (is_a<RealDouble>(*diff))
+        {
+            double result = down_cast<const RealDouble &>(*diff).as_double();
+            return (op == LT && result < 0.0)
+                || (op == GT && result > 0.0);
+        }
+        else if (is_a<Integer>(*diff))
+        {
+            int result = down_cast<const Integer &>(*diff).as_int();
+            return (op == LT && result < 0)
+                || (op == GT && result > 0);
+        }
+        else
+            ERROR("Unknown symengine number type.");
+    }
+
+    auto evaluator = BooleanEvaluator::get().lock();
+    if (!evaluator)
         ERROR("Your code contains conditional branches, but you haven't "
-              "created a boolean evaluator. See <doc> for details.");     // TODO: link
-    
-    if (op == EQ)
-        return down_cast<const Number &>(*diff).is_zero();
-    
-    if (is_a<RealDouble>(*diff))
-    {
-         double result = down_cast<const RealDouble &>(*diff).as_double();
-         return (op==LT  && result < 0.0)  
-             || (op==GT  && result > 0.0);
-    }
-    else if (is_a<Integer>(*diff))
-    {
-         int result = down_cast<const Integer &>(*diff).as_int();
-         return (op==LT  && result < 0)  
-             || (op==GT  && result > 0);
-    }
-    else
-        ERROR("Unknown symengine number type.");    
+            "created a boolean evaluator. See <doc> for details.");     // TODO: link
+    return evaluator->handle(lhs->expression, rhs->expression, op);
 }
 
 bool BooleanEvaluatorPrivate::handle(SymExpr lhs, SymExpr rhs, BooleanOp op)

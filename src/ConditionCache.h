@@ -6,7 +6,7 @@ namespace codegenvar {
 namespace internal {
 
 enum BooleanOp { LT=1, EQ=2, GT=4 };
-enum CompoundBooleanOp { LE=LT|EQ, GE=EQ|GT, NE=LT|GT, Unknown = 7 };
+enum CompoundBooleanOp { Invalid=0, LE=LT|EQ, GE=EQ|GT, NE=LT|GT, Unknown=7 };
 
 /*
  * A ConditionCache keeps track of mathematical expressions wich have already been 
@@ -40,15 +40,16 @@ class ConditionCache
 {
     typedef SymEngine::RCP<const SymEngine::Basic> MathExpression;
 public:
-    void insert(MathExpression lhs, MathExpression rhs, BooleanOp op, bool on);
-    void insert(MathExpression lhs, MathExpression rhs, CompoundBooleanOp op, bool on);
+    void insert(MathExpression lhs, MathExpression rhs, int op, bool on);
 
     bool alreadyEvaluated(MathExpression lhs, MathExpression rhs, BooleanOp op, bool& value)const;
     bool alreadyEvaluated(MathExpression lhs, MathExpression rhs, CompoundBooleanOp op, bool& value)const;
     
+    static bool isMathematicallyEquivalent(MathExpression lhs, MathExpression rhs);
 private:
     std::map<MathExpression, int, SymEngine::RCPBasicKeyLess> allowedStates;
 };
+
 
 } // namespace internal
 
