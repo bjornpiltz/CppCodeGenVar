@@ -16,6 +16,7 @@ include_directories(${PROJECT_SRC_DIR}/third_party/eigen3)
 
 add_example(derivate)
 add_example(code)
+add_example(conditional)
 add_example(eigen)
 add_example(rodrigues)
 add_example(rotation)

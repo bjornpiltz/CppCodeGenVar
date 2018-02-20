@@ -10,7 +10,6 @@ set(HDRS
   ${PROJECT_SRC_DIR}/include/codegenvar/SymbolWithEigenBindings.h
   ${PROJECT_SRC_DIR}/include/codegenvar/generator/StringGenerator.h
   ${PROJECT_SRC_DIR}/include/codegenvar/generator/CodeGenerator.h
-  ${PROJECT_SRC_DIR}/include/codegenvar/generator/DerivateGenerator.h
 )
 
 set(SRCS 
@@ -20,7 +19,6 @@ set(SRCS
   ${PROJECT_SRC_DIR}/src/Scalar.cpp
   ${PROJECT_SRC_DIR}/src/Symbol.cpp
   ${PROJECT_SRC_DIR}/src/generator/CodeGenerator.cpp
-  ${PROJECT_SRC_DIR}/src/generator/DerivateGenerator.cpp
   ${PROJECT_SRC_DIR}/src/generator/StringGenerator.cpp
 )
 

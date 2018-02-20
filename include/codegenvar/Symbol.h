@@ -35,7 +35,7 @@ public:
         return {Symbol{args}...};
     }
     std::string toString()const;
-    std::string toCode()const;
+    std::string toCode(const std::string& varName = "out")const;
     double toDouble()const;
     
     Symbol resolved(const Map& symbolMap)const;
@@ -47,6 +47,8 @@ public:
 
     bool equals(const Symbol& other)const;
     
+    Symbol diff(const std::string& varName)const;
+
     // Unary '-':
     friend Symbol operator-(const Symbol& x);
     
@@ -139,9 +141,7 @@ private:
 
 private:
     friend struct CodeGenerator;
-    friend struct DerivateEvaluator;
-    friend struct NumericalEvaluator;
-    friend struct StringEvaluator;
+    friend struct StringGenerator;
     friend struct BooleanEvaluator;
 };
 

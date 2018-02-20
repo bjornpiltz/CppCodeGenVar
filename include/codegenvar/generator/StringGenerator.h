@@ -3,7 +3,7 @@
 
 namespace codegenvar {
 
-struct StringEvaluator
+struct StringGenerator
 {
     std::string operator()(const Symbol&)const;
 };

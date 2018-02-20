@@ -4,6 +4,7 @@
 #include <symengine/functions.h>
 #include <symengine/visitor.h>
 #include <symengine/eval_double.h>
+#include <symengine/derivative.h>
 
 namespace codegenvar{
 
@@ -280,6 +281,11 @@ double Symbol::toDouble()const
 {
     CONDITION(!p->expression.is_null(), "Symbol is uninitialized");
     return SymEngine::eval_double(*p->expression);
+}
+
+Symbol Symbol::diff(const std::string& varName)const
+{
+    return SymbolPrivate::ctor(SymEngine::diff(p->expression, symbol(varName)));
 }
 
 }// namespace codegenvar

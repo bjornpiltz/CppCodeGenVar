@@ -84,8 +84,8 @@ namespace codegenvar
                 result(r, c) = Symbol(name + "_" + std::to_string(r+1) + std::to_string(c+1));
         return result;
     }
-    template<typename Derived>
-    void operator |=(Eigen::DenseBase<Derived> & dst, const Eigen::DenseBase<Derived> & src)
+    template<typename Derived1, typename Derived2>
+    void operator |=(Eigen::DenseBase<Derived1> & dst, const Eigen::DenseBase<Derived2> & src)
     {
         if (dst.rows() != src.rows() || dst.cols() != src.cols())
             dst.resize(src.rows(), src.cols());
@@ -93,5 +93,14 @@ namespace codegenvar
         for (int r = 0; r<src.rows(); r++)
             for (int c = 0; c<src.cols(); c++)
                 dst(r, c) |= src(r, c);
+    }
+    template<typename Derived>
+    typename Eigen::DenseBase<Derived>::PlainObject expanded(const Eigen::DenseBase<Derived>& src)
+    {
+        typename Eigen::DenseBase<Derived>::PlainObject dst(src);
+        for (int r = 0; r<src.rows(); r++)
+            for (int c = 0; c<src.cols(); c++)
+                dst(r, c).expand();
+        return dst;
     }
 }

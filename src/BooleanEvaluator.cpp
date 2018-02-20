@@ -8,6 +8,7 @@
 
 namespace codegenvar {
     
+
 namespace internal {
     
 using namespace SymEngine;
@@ -24,7 +25,9 @@ struct BooleanEvaluatorPrivate
 };
 
 } // namespace internal
-using internal::BooleanEvaluatorPrivate;
+
+
+using namespace internal;
 using SymEngine::boolTrue;
 using SymEngine::down_cast;
 using SymEngine::integer;
@@ -34,7 +37,7 @@ using SymEngine::PiecewiseVec;
 using SymEngine::piecewise;
 using SymEngine::RCP;
 
-std::shared_ptr<internal::BooleanEvaluatorPrivate> BooleanEvaluator::p;
+std::shared_ptr<BooleanEvaluatorPrivate> BooleanEvaluator::p;
 
 BooleanEvaluator::BooleanEvaluator()
 {
@@ -43,24 +46,24 @@ BooleanEvaluator::BooleanEvaluator()
     p = std::make_shared<BooleanEvaluatorPrivate>();
 }
 
-std::weak_ptr<internal::BooleanEvaluatorPrivate> BooleanEvaluator::get()
+std::weak_ptr<BooleanEvaluatorPrivate> BooleanEvaluator::get()
 {
     return p;
 }
 
 bool operator ==(const Symbol& lhs, const Symbol& rhs)
 {
-    return BooleanEvaluatorPrivate::handle(lhs.p.get(), rhs.p.get(), internal::EQ);
+    return BooleanEvaluatorPrivate::handle(lhs.p.get(), rhs.p.get(), EQ);
 }
 
 bool operator < (const Symbol& lhs, const Symbol& rhs)
 {
-    return BooleanEvaluatorPrivate::handle(lhs.p.get(), rhs.p.get(), internal::LT);
+    return BooleanEvaluatorPrivate::handle(lhs.p.get(), rhs.p.get(), LT);
 }
 
 bool operator > (const Symbol& lhs, const Symbol& rhs)
 {
-    return BooleanEvaluatorPrivate::handle(lhs.p.get(), rhs.p.get(), internal::GT);
+    return BooleanEvaluatorPrivate::handle(lhs.p.get(), rhs.p.get(), GT);
 }
 
 namespace internal {
@@ -82,9 +85,9 @@ bool BooleanEvaluatorPrivate::handle(const SymbolPrivate *lhs, const SymbolPriva
         }
         else if (is_a<Integer>(*diff))
         {
-            int result = down_cast<const Integer &>(*diff).as_int();
-            return (op == LT && result < 0)
-                || (op == GT && result > 0);
+        int result = down_cast<const Integer &>(*diff).as_int();
+        return (op == LT && result < 0)
+            || (op == GT && result > 0);
         }
         else
             ERROR("Unknown symengine number type.");
@@ -93,7 +96,8 @@ bool BooleanEvaluatorPrivate::handle(const SymbolPrivate *lhs, const SymbolPriva
     auto evaluator = BooleanEvaluator::get().lock();
     if (!evaluator)
         ERROR("Your code contains conditional branches, but you haven't "
-            "created a boolean evaluator. See <doc> for details.");     // TODO: link
+            "created a boolean evaluator.\n"
+            "See http://cppcodegenvar.readthedocs.io/en/latest/conditional_example.html for details.");     
     return evaluator->handle(lhs->expression, rhs->expression, op);
 }
 
@@ -144,28 +148,26 @@ Symbol& Symbol::operator|=(const Symbol& symbol)
     auto evaluator = BooleanEvaluator::get().lock();
     if (!evaluator)
         return *this = symbol;
-     
+
     auto condition = evaluator->getCurrentContext();
     if (condition.is_null())
         return *this = symbol;
 
     evaluator->evaluated.visit(evaluator->currentContext);
-    
+
     if (evaluator->evaluated.isFullyEvaluated())
         condition = boolTrue;
 
-    auto q = piecewise({ {symbol.p->expression, condition} });
     if (is_a<Piecewise>(*p->expression))
     {
-        const Piecewise& piecewise = down_cast<const Piecewise&>(*p->expression);
-        PiecewiseVec vec = piecewise.get_vec();
-        ASSERT(vec.size()!=0);
-        // TODO: check if vec already contains condition
+        PiecewiseVec vec = down_cast<const Piecewise&>(*p->expression).get_vec();
+        ASSERT(vec.size() != 0);
         vec.emplace_back(std::make_pair(symbol.p->expression, condition));
         p->expression = SymEngine::piecewise(std::move(vec));
     }
     else
     {
+        auto q = piecewise({ {symbol.p->expression, condition} });
         if (!eq(*p->expression, *integer(0)))
             std::cerr << "Warning: overwriting expression: " << p->expression->__str__() << std::endl;
         std::swap(q, p->expression);

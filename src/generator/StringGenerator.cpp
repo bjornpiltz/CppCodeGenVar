@@ -61,23 +61,19 @@ public:
     }
     void bvisit(const Piecewise &x)
     { 
-        std::string tabs(" ");
         std::ostringstream s;
         auto vec = x.get_vec();
         bool hasElse = vec.back().second->__eq__(*boolTrue);
         int size =  hasElse ? vec.size()-1 : vec.size();
         for (int i = 0; i< size; i++)
         {
-            s << apply(vec[i].second);
-            s << "\n" << tabs << "? ";
-            s << apply(vec[i].first);
-            s << "\n" << tabs << ": ";
-            tabs += "  ";
+            s << apply(vec[i].second) << " ?" << std::endl;
+            s << "    " << apply(vec[i].first)<< " :" << std::endl;
         }
         if (hasElse)
-            s << apply(vec.back().first);
+            s << "    " << apply(vec.back().first);
         else
-            s << "<undefined>";
+            s << "    <undefined>";
         str_ = s.str(); 
     }
     void bvisit(const And &x)
@@ -108,7 +104,7 @@ public:
 
 } // namespace internal
 
-std::string StringEvaluator::operator()(const Symbol& symbol)const
+std::string StringGenerator::operator()(const Symbol& symbol)const
 {
     const auto& p = symbol.p;
     if (p->expression.is_null())
@@ -120,7 +116,7 @@ std::string StringEvaluator::operator()(const Symbol& symbol)const
 
 std::string Symbol::toString()const
 {
-    return StringEvaluator()(*this);
+    return StringGenerator()(*this);
 }
 
 }// namespace codegenvar

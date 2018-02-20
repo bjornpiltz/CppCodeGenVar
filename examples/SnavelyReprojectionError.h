@@ -14,10 +14,10 @@ struct SnavelyReprojectionError
     
     typedef typename Vec3::ConstMapType Vec3Ref;
   
-    Eigen::Matrix<Scalar, 2, 1> observed;
+    Vec2 observed;
     
-    SnavelyReprojectionError(const Scalar& obs_x, const Scalar& obs_y)
-        : observed(obs_x, obs_y)
+    SnavelyReprojectionError(const Vec2& obs)
+        : observed(obs)
     {
     }
     Vec3 rotate(const Vec3Ref& R, const Vec3Ref& v)const
@@ -38,16 +38,16 @@ struct SnavelyReprojectionError
     }
     // projectPoint:
     Vec2 projectPoint(
-              const Vec3Ref& R, // The compact angle-axis rotation of the camera.
-              const Vec3Ref& T, // The translation of the camera.
+              const Scalar R[3], // The compact angle-axis rotation of the camera.
+              const Scalar T[3], // The translation of the camera.
               const Scalar& f,  // The focal length of the camera.
               const Scalar& l1, // The first distortion parameter of the camera.
               const Scalar& l2, // The second distortion parameter of the camera.
-              const Vec3Ref& P  // The world point.
+              const Scalar P[3]  // The world point.
         ) const 
     {
         // Rotate P around R and translate by T:    
-        const Vec3 p = rotate(R, P) + T;
+        const Vec3 p = rotate(Vec3::Map(R), Vec3::Map(P)) + Vec3::Map(T);
   
         // Compute the center of distortion.
         const Vec2 cx = -p.hnormalized();
@@ -64,15 +64,14 @@ struct SnavelyReprojectionError
                     const Scalar point[3], 
                           Scalar residuals[2]) const 
     {
-        const auto R = Vec3::Map(camera+0); // camera[0,1,2] are the compact angle-axis rotation.
-        const auto T = Vec3::Map(camera+3); // camera[3,4,5] are the translation.
+        const auto R = camera+0; // camera[0,1,2] are the compact angle-axis rotation.
+        const auto T = camera+3; // camera[3,4,5] are the translation.
         const auto& f  = camera[6];         // camera[6] is the focal length
         const auto& l1 = camera[7];         // camera[7] is the first distortion parameter.
         const auto& l2 = camera[8];         // camera[8] is the second distortion parameter.
-        const auto P = Vec3::Map(point);    // point[0,1,2] are the world point.
         
         // The error is the difference between the predicted and observed position.      
-        Vec2::Map(residuals) = projectPoint(R, T, f, l1, l2, P) - observed;
+        Vec2::Map(residuals) = projectPoint(R, T, f, l1, l2, point) - observed;
         return true;
     }
 };

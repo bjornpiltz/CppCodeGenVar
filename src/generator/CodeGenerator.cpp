@@ -169,9 +169,9 @@ std::string CodeGenerator::operator()(const Symbol& symbol)const
     return result;
 }
 
-std::string Symbol::toCode()const
+std::string Symbol::toCode(const std::string& varName)const
 {
-    return CodeGenerator()(*this);
+    return CodeGenerator(varName)(*this);
 }
 
 }// namespace codegenvar
