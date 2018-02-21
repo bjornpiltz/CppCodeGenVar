@@ -1,6 +1,6 @@
 EXCEPTION: Your code contains conditional branches, but you haven't created a boolean evaluator.
 See http://cppcodegenvar.readthedocs.io/en/latest/conditional_example.html for details.
-D:\Dev\playground\CppCodeGenVar\src\BooleanEvaluator.cpp line 100
+<src>/CppCodeGenVar/src/BooleanEvaluator.cpp line 100
 ...
 z = 0 == y ?
     x :

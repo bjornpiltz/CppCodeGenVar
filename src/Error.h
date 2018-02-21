@@ -24,9 +24,18 @@ public:
                         const char* fileName,
                         const std::size_t lineNumber)
 {
-   std::ostringstream stream;
-   stream << "EXCEPTION: " << msg << "\n" << fileName << " line " << lineNumber;
-   throw SymbolError(stream.str());
+    // Make the source path portable:
+    std::string shortFileName(fileName);
+    auto lastSlash = shortFileName.find("CppCodeGenVar");
+    if (lastSlash != std::string::npos)
+        shortFileName = "<src>/" + shortFileName.substr(lastSlash);
+    for (auto i = 0; i < shortFileName.size(); ++i)
+        if (shortFileName[i] == '\\')
+            shortFileName[i] = '/';
+
+    std::ostringstream stream;
+    stream << "EXCEPTION: " << msg << "\n" << shortFileName << " line " << lineNumber;
+    throw SymbolError(stream.str());
 }
 
 }// namespace internal
