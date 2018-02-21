@@ -45,14 +45,9 @@ int main()
 
     // If we convert all expressions to their expanded form, we can see that they are identical.
     std::cout << "\nExpanded:\n";
-    for (int i = 0; i < 3; i++)
-    {
-        r1(i).expand();
-        r(i).expand();
-    }
 
-    std::cout << "\nRodrigues:\n" << r1 << std::endl;
-    std::cout << "\nEigen:\n"  << r << std::endl;
+    std::cout << "\nRodrigues:\n" << expanded(r1) << std::endl;
+    std::cout << "\nEigen:\n"  << expanded(r) << std::endl;
 
     return 0;
 }

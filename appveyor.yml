@@ -19,7 +19,7 @@ environment:
       PLATFORM: x86
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     
-clone_folder: c:\dev\src
+clone_folder: c:\dev\CppCodeGenVar
 
 install:
   - git submodule update --init --recursive
@@ -34,5 +34,5 @@ build_script:
   - 7z x symengine_0.3.3_1a797b3_msvc_15.3_%PLATFORM%.zip -oc:\dev\install%PLATFORM%
   - mkdir build
   - cd build
-  - cmake -G"%GENERATOR%" -DCMAKE_PREFIX_PATH=c:/dev/install%PLATFORM% ../src
+  - cmake -G"%GENERATOR%" -DCMAKE_PREFIX_PATH=c:/dev/install%PLATFORM% ../CppCodeGenVar
   - cmake --build . --config Release --target check

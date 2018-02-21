@@ -1,28 +1,23 @@
 #include "SnavelyReprojectionError.h"
-#include <codegenvar/Symbol.h>
+#include <codegenvar/Eigen>
 #include <codegenvar/BooleanEvaluator.h>
 #include <iostream>
-#include <vector>
 
 using namespace codegenvar;
 
 int main()
 {
-    SnavelyReprojectionError<Symbol> function(Symbol("obs_x"), Symbol("obs_y"));
-    auto vars = Symbol::Array(
-          "r1", "r2", "r3", 
-          "t1", "t2", "t3",
-          "f" , "l1", "l2",
-          "p1", "p2", "p3");
+    const Vec2 obs = namedVector<2>("obs");
+    const Vec3 r = namedVector<3>("r"), t=namedVector<3>("t"), p=namedVector<3>("p");
+    const Symbol f("f"), l1("l1"), l2("l2");
+
+    SnavelyReprojectionError<Symbol> snavely(obs);
     
-    Symbol residuals[2];
+    Vec2 residuals;
     BooleanEvaluator evaluator;
     do
     {
-        Symbol tmp[2];
-        function(&vars[0], &vars[9], tmp);
-        residuals[0] |= tmp[0];
-        residuals[1] |= tmp[1];
+        residuals |= snavely.projectPoint(r.data(), t.data(), f, l1, l2, p.data());
     }
     while (!evaluator.isFullyEvaluated());
     

@@ -14,7 +14,7 @@ form :math:`~(\theta, \mathbf{v})` and transforms a vector :math:`\mathbf{k} \in
    \mathbf{v}_\mathrm{rot} = \mathbf{v} \cos\theta + (\mathbf{k} \times \mathbf{v})
    \sin\theta + \mathbf{k} ~(\mathbf{k} \cdot \mathbf{v}) (1 - \cos\theta)
 
-We use the matrix library `Eigen <http://eigen.tuxfamily.org/index.php?title=Main_Page>`_ to implement the formula in a way which is efficient while remaining 
+We use the matrix library `Eigen <http://eigen.tuxfamily.org>`_ to implement the formula in a way which is efficient while remaining 
 almost as expressive as the mathematical notation.
 
 .. literalinclude:: ../examples/rodrigues.cpp
@@ -39,7 +39,7 @@ in testing its mathematical correctness. For reference we will use the class ``E
     .. literalinclude:: rodrigues_example.txt
        :end-before: The two expressions are equal
 
-On a first glance  it is not possible to see if the two expressions are equivalent, 
+It is not immediately obvious whether the two expressions are equivalent, 
 but the function ``Symbol::equals(const Symbol&)`` tests for mathematical equivalency.
 
 .. tabs::
@@ -54,11 +54,11 @@ but the function ``Symbol::equals(const Symbol&)`` tests for mathematical equiva
   .. tab:: Output
 
     .. literalinclude:: rodrigues_example.txt
-       :start-after: v_0*(-k_1*sin(theta)
+       :start-after: v_1*(-k_2*sin(theta)
        :end-before: Expanded:
 	   
 .. NOTE::
-  Do not use code like ``a==b`` to test for mathematical equivalency. See :doc:`booleans`.
+  Do not use code like ``a==b`` to test for mathematical equivalency. See :doc:`conditional_example`.
 
 Finally, we can use the function ``Symbol::expand()`` to transform the expressions to 
 their expanded form, which is identical for both expressions.
@@ -70,6 +70,7 @@ their expanded form, which is identical for both expressions.
     .. literalinclude:: ../examples/rodrigues.cpp
        :language: c++
        :start-after: << "." << std::endl;
+       :end-before: return 0;
 	   
   .. tab:: Output
 

@@ -1,4 +1,0 @@
-=================
-Boolean operators
-=================
-Coming soon...

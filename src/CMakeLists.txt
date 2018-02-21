@@ -10,22 +10,23 @@ set(HDRS
   ${PROJECT_SRC_DIR}/include/codegenvar/SymbolWithEigenBindings.h
   ${PROJECT_SRC_DIR}/include/codegenvar/generator/StringGenerator.h
   ${PROJECT_SRC_DIR}/include/codegenvar/generator/CodeGenerator.h
-  ${PROJECT_SRC_DIR}/include/codegenvar/generator/DerivateGenerator.h
 )
 
 set(SRCS 
   ${PROJECT_SRC_DIR}/src/BooleanEvaluator.cpp
+  ${PROJECT_SRC_DIR}/src/ConditionalTree.cpp
+  ${PROJECT_SRC_DIR}/src/ConditionCache.cpp
   ${PROJECT_SRC_DIR}/src/Scalar.cpp
   ${PROJECT_SRC_DIR}/src/Symbol.cpp
   ${PROJECT_SRC_DIR}/src/generator/CodeGenerator.cpp
-  ${PROJECT_SRC_DIR}/src/generator/DerivateGenerator.cpp
   ${PROJECT_SRC_DIR}/src/generator/StringGenerator.cpp
 )
 
 set(INTERNALS
-  BooleanEvaluatorPrivate.h
-  Error.h
-  SymbolPrivate.h
+  ${PROJECT_SRC_DIR}/src/ConditionalTree.h
+  ${PROJECT_SRC_DIR}/src/ConditionCache.h
+  ${PROJECT_SRC_DIR}/src/Error.h
+  ${PROJECT_SRC_DIR}/src/SymbolPrivate.h
 )
 source_group(internal FILES ${INTERNALS})
 
