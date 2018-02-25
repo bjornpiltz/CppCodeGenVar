@@ -20,6 +20,16 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+# -- Doxygen preprocessing ------------------------------------------------
+import os
+import subprocess
+
+build_doxygen = os.environ.get('READTHEDOCS', None) == 'True'
+# TODO remove me
+build_doxygen == True
+#if build_doxygen:
+subprocess.call('doxygen', shell=True)
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -35,7 +45,12 @@ extensions = ['sphinx.ext.doctest',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',  
 	'sphinx_tabs.tabs',
-    'sphinx.ext.githubpages']
+    'sphinx.ext.githubpages',
+	'breathe']
+
+# Breathe configurations
+breathe_projects = {"cppcodegenvar": "doxyout/xml"}
+breathe_default_project = "cppcodegenvar"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

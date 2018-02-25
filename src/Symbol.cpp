@@ -6,6 +6,9 @@
 #include <symengine/eval_double.h>
 #include <symengine/derivative.h>
 
+/**
+ * All classes and function of CppCodeGenVar are contained int the namespace codegenvar.
+ */
 namespace codegenvar{
 
 using SymEngine::symbol;
@@ -29,6 +32,9 @@ static SymExpr scalar(const Scalar& value)
 
 using namespace internal;
 
+/** @defgroup symbol_ctors Symbol Constructors
+ *  @{
+ */
 Symbol::Symbol(const std::string& name)
     : Symbol()
 {           
@@ -36,10 +42,42 @@ Symbol::Symbol(const std::string& name)
         p->expression = symbol(name);
 }
 
-void Symbol::swap(Symbol& other)
-{
-    std::swap(p, other.p);
+ /// Constructors creating a constant.
+Symbol::Symbol(int value)
+    : Symbol()
+{    
+    p->expression = integer(value);
 }
+
+ /// Constructors creating a constant.
+Symbol::Symbol(long int value)
+    : Symbol()
+{    
+    p->expression = integer(value);
+}
+
+ /// Constructors creating a constant.
+Symbol::Symbol(long long int value)
+    : Symbol()
+{    
+    p->expression = integer(value);
+}
+
+ /// Constructors creating a constant.
+Symbol::Symbol(float value)
+    : Symbol()
+{    
+    p->expression = real_double(value);
+}
+
+ /// Constructors creating a constant.
+Symbol::Symbol(double value)
+    : Symbol()
+{    
+    p->expression = real_double(value);
+}
+
+/** @} */ // end of symbol_ctors
 
 Symbol::Symbol(const Scalar& value)
     : Symbol()
@@ -47,34 +85,9 @@ Symbol::Symbol(const Scalar& value)
     p->expression = scalar(value);
 }
 
-Symbol::Symbol(int value)
-    : Symbol()
-{    
-    p->expression = integer(value);
-}
-
-Symbol::Symbol(long int value)
-    : Symbol()
-{    
-    p->expression = integer(value);
-}
-
-Symbol::Symbol(long long int value)
-    : Symbol()
-{    
-    p->expression = integer(value);
-}
-
-Symbol::Symbol(float value)
-    : Symbol()
-{    
-    p->expression = real_double(value);
-}
-
-Symbol::Symbol(double value)
-    : Symbol()
-{    
-    p->expression = real_double(value);
+void Symbol::swap(Symbol& other)
+{
+    std::swap(p, other.p);
 }
 
 std::set<std::string> Symbol::getVariableNames()const
@@ -105,6 +118,29 @@ bool Symbol::equals(const Symbol& other)const
     return SymEngine::eq(*other.p->expression, *other.p->expression);
 }
 
+Symbol Symbol::resolved(const Symbol::Map& symbolMap) const
+{
+    CONDITION(!p->expression.is_null(), "Symbol is uninitialized");
+    SymEngine::map_basic_basic map;
+    for (auto pair: symbolMap)
+        map[symbol(pair.first)] = scalar(pair.second);
+    return SymbolPrivate::ctor(p->expression->subs(map));
+}
+
+double Symbol::toDouble()const
+{
+    CONDITION(!p->expression.is_null(), "Symbol is uninitialized");
+    return SymEngine::eval_double(*p->expression);
+}
+
+Symbol Symbol::diff(const std::string& varName)const
+{
+    return SymbolPrivate::ctor(SymEngine::diff(p->expression, symbol(varName)));
+}
+
+/** @defgroup symbol_math_ops Mathematical operations
+ *  @{
+ */
 Symbol& Symbol::operator += (const Symbol& other)
 {
     Symbol copy(*this + other);
@@ -133,15 +169,6 @@ Symbol& Symbol::operator /= (const Symbol& other)
     return *this;
 }
 
-Symbol Symbol::resolved(const Symbol::Map& symbolMap) const
-{
-    CONDITION(!p->expression.is_null(), "Symbol is uninitialized");
-    SymEngine::map_basic_basic map;
-    for (auto pair: symbolMap)
-        map[symbol(pair.first)] = scalar(pair.second);
-    return SymbolPrivate::ctor(p->expression->subs(map));
-}
-
 Symbol operator + (const Symbol& lhs, const Symbol& rhs)
 {
     return SymbolPrivate::ctor(add(lhs.p->expression, rhs.p->expression));
@@ -162,6 +189,13 @@ Symbol operator / (const Symbol& lhs, const Symbol& rhs)
     return SymbolPrivate::ctor(div(lhs.p->expression, rhs.p->expression));
 }
 
+// Unary minus
+Symbol operator -(const Symbol& value)
+{
+    return SymbolPrivate::ctor(sub(integer(0), value.p->expression));
+}
+/** @} */ // end of symbol_math_ops
+
 // Symbol op Scalar and Scalar op Symbol overloads
 Symbol operator + (const Scalar& lhs, const Symbol& rhs){ return Symbol(lhs) + rhs;}
 Symbol operator + (const Symbol& lhs, const Scalar& rhs){ return lhs + Symbol(rhs);}
@@ -178,10 +212,6 @@ Symbol& Symbol::operator -= (const Scalar& other){ return *this -= Symbol(other)
 Symbol& Symbol::operator *= (const Scalar& other){ return *this *= Symbol(other);}
 Symbol& Symbol::operator /= (const Scalar& other){ return *this /= Symbol(other);}
 
-Symbol pow(const Symbol&x, const Scalar& y){return pow(x, Symbol(y));}
-Symbol pow(const Scalar&x, const Symbol& y){return pow(Symbol(x), y);}
-
-
 bool operator ==(const Symbol& lhs, const Scalar& rhs){ return (lhs) == Symbol(rhs); }
 bool operator ==(const Scalar& lhs, const Symbol& rhs){ return Symbol(lhs) == (rhs); }
 bool operator < (const Symbol& lhs, const Scalar& rhs){ return (lhs) <  Symbol(rhs); }
@@ -194,7 +224,6 @@ bool operator <=(const Symbol& lhs, const Scalar& rhs){ return (lhs) <= Symbol(r
 bool operator <=(const Scalar& lhs, const Symbol& rhs){ return Symbol(lhs) <= (rhs); }
 bool operator >=(const Symbol& lhs, const Scalar& rhs){ return (lhs) >= Symbol(rhs); }
 bool operator >=(const Scalar& lhs, const Symbol& rhs){ return Symbol(lhs) >= (rhs); }
-
 
 #define DEFINE_UNARY_FUNCTION(functionName)\
 Symbol functionName(const Symbol& value)\
@@ -226,15 +255,8 @@ Symbol pow(const Symbol& lhs, const Symbol& rhs)
     return SymbolPrivate::ctor(pow(lhs.p->expression, rhs.p->expression));
 }
 
-// Unary minus
-Symbol operator -(const Symbol& value)
-{
-    return SymbolPrivate::ctor(sub(integer(0), value.p->expression));
-}
-
-bool operator !=(const Symbol& lhs, const Symbol& rhs){ return !(lhs == rhs);}
-bool operator <=(const Symbol& lhs, const Symbol& rhs){ return !(lhs  > rhs);}
-bool operator >=(const Symbol& lhs, const Symbol& rhs){ return !(lhs  < rhs);}
+Symbol pow(const Symbol&x, const Scalar& y){return pow(x, Symbol(y));}
+Symbol pow(const Scalar&x, const Symbol& y){return pow(Symbol(x), y);}
 
 std::ostream& operator<<(std::ostream& os, const Symbol& a)
 {
@@ -275,17 +297,6 @@ Symbol& Symbol::operator=(Symbol&& other)
 
 Symbol::~Symbol()
 {   
-}
-
-double Symbol::toDouble()const
-{
-    CONDITION(!p->expression.is_null(), "Symbol is uninitialized");
-    return SymEngine::eval_double(*p->expression);
-}
-
-Symbol Symbol::diff(const std::string& varName)const
-{
-    return SymbolPrivate::ctor(SymEngine::diff(p->expression, symbol(varName)));
 }
 
 }// namespace codegenvar

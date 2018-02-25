@@ -11,6 +11,9 @@ namespace codegenvar {
 
 namespace internal {class SymbolPrivate;}
 
+/**
+ * The class Symbol is the main class of the CppCondegenVar project.
+ */
 class Symbol
 {
 public:        
@@ -25,10 +28,13 @@ public:
     explicit Symbol(double value);
     explicit Symbol(const Scalar& value);
     
-    // Constructors creating variables or named constants.
+    /// Constructor creating a named variable.
     explicit Symbol(const std::string&);
     
-    // Constructor creating an array of symbols.
+    /// Constructor creating an array of symbols. \ingroup symbol_ctors
+    /// \code
+    ///    auto vars = Symbol::Array("a", "b", "c", 0, 3.14);
+    /// \endcode
     template <class... Args> 
     static std::array<Symbol, sizeof...(Args)> Array(Args... args)
     {
@@ -65,6 +71,9 @@ public:
         
     // Unary functions:
     
+    /** @defgroup symbol_math_functions Mathematical functions
+     *  @{
+     */
     friend Symbol abs(const Symbol&);
     friend Symbol log(const Symbol&);
     friend Symbol exp(const Symbol&);
@@ -81,6 +90,7 @@ public:
     friend Symbol floor(const Symbol&);
     friend Symbol ceil(const Symbol&);
     friend Symbol pow(const Symbol&, const Symbol&);
+    /** @} */ // end of symbol_math_functions
     
     // Booleans:
     friend bool operator ==(const Symbol& lhs, const Symbol& rhs);

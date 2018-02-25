@@ -21,7 +21,6 @@ add_custom_target(docs ALL
                  ${CMAKE_CURRENT_SOURCE_DIR}
                  ${SPHINX_HTML_DIR}
                  COMMENT "Building HTML documentation with Sphinx"
-                 SOURCES ${DOC_SOURCES}
-                 DEPENDS run_examples
+                 SOURCES ${DOC_SOURCES} conf.py
 )
 set_target_properties(docs PROPERTIES FOLDER "CMake Targets")

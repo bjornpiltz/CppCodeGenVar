@@ -16,7 +16,7 @@ using namespace SymEngine;
 struct BooleanEvaluatorPrivate
 {
     static bool handle(const SymbolPrivate* lhs, const SymbolPrivate* rhs, BooleanOp op);
-    bool handle(RCP<const Basic> lhs, RCP<const Basic> rhs, BooleanOp op);
+    bool handle(SymExpr lhs, SymExpr rhs, BooleanOp op);
 
     ConditionalTree evaluated;
     ConditionalTree::Iterator currentContext;
@@ -51,6 +51,10 @@ std::weak_ptr<BooleanEvaluatorPrivate> BooleanEvaluator::get()
     return p;
 }
 
+
+/** @defgroup symbol_logical_ops Logical operators
+ *  @{
+ */
 bool operator ==(const Symbol& lhs, const Symbol& rhs)
 {
     return BooleanEvaluatorPrivate::handle(lhs.p.get(), rhs.p.get(), EQ);
@@ -65,6 +69,14 @@ bool operator > (const Symbol& lhs, const Symbol& rhs)
 {
     return BooleanEvaluatorPrivate::handle(lhs.p.get(), rhs.p.get(), GT);
 }
+
+bool operator !=(const Symbol& lhs, const Symbol& rhs){ return !(lhs == rhs);}
+
+bool operator <=(const Symbol& lhs, const Symbol& rhs){ return !(lhs  > rhs);}
+
+bool operator >=(const Symbol& lhs, const Symbol& rhs){ return !(lhs  < rhs);}
+/** @} */ // end of symbol_logical_ops
+
 
 namespace internal {
 

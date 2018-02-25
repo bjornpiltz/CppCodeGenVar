@@ -23,5 +23,6 @@ its `GitHub Site
    :hidden:
    
    examples
+   api
    installation
    license
