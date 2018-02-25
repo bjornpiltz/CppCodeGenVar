@@ -19,7 +19,7 @@ its `GitHub Site
 <https://github.com/bjornpiltz/CppCodeGenVar>`_ .
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 4
    :hidden:
    
    examples
