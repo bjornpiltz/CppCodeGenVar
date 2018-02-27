@@ -4,9 +4,6 @@ The Symbol class
 
 .. doxygenclass:: codegenvar::Symbol
 
-------------
-Constructors
-------------
 A Symbol object can be initialized as a named symbol or a constant.
 
 .. code-block:: c++
@@ -16,26 +13,17 @@ A Symbol object can be initialized as a named symbol or a constant.
 
 .. doxygengroup:: symbol_ctors
   :content-only:
-  
------------------------
-Mathematical operations
------------------------
+
 The :cpp:class:`codegenvar::Symbol` class has support for the following mathematical operations. 
 
 .. doxygengroup:: symbol_math_ops
   :content-only:
 
-----------------------
-Mathematical functions
-----------------------
 The :cpp:class:`codegenvar::Symbol` class has support for the following mathematical operations. 
 
 .. doxygengroup:: symbol_math_functions
   :content-only:
 
-------------------
-Logical operations
-------------------
 The :cpp:class:`codegenvar::Symbol` class has support for the following boolean operations. 
 
 .. NOTE::
