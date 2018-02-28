@@ -25,10 +25,9 @@ import os
 import subprocess
 
 build_doxygen = os.environ.get('READTHEDOCS', None) == 'True'
-# TODO remove me
-build_doxygen == True
-#if build_doxygen:
-subprocess.call('doxygen', shell=True)
+
+if build_doxygen:
+    subprocess.call('doxygen', shell=True)
 
 # -- General configuration ------------------------------------------------
 
@@ -44,7 +43,7 @@ extensions = ['sphinx.ext.doctest',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',  
-	'sphinx_tabs.tabs',
+    'sphinx_tabs.tabs',
     'sphinx.ext.githubpages',
 	'breathe']
 
