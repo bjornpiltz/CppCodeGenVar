@@ -118,6 +118,11 @@ html_static_path = []
 import sphinx_rtd_theme
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
+# I don't know why this is necessary.
+html_context = {
+    'css_files': ['https://media.readthedocs.org/css/sphinx_rtd_theme.css'],
+}
+
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
