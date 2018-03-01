@@ -20,6 +20,15 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+# -- Doxygen preprocessing ------------------------------------------------
+import os
+import subprocess
+
+build_doxygen = os.environ.get('READTHEDOCS', None) == 'True'
+
+if build_doxygen:
+    subprocess.call('doxygen', shell=True)
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -34,8 +43,13 @@ extensions = ['sphinx.ext.doctest',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',  
-	'sphinx_tabs.tabs',
-    'sphinx.ext.githubpages']
+    'sphinx_tabs.tabs',
+    'sphinx.ext.githubpages',
+    'breathe']
+
+# Breathe configurations
+breathe_projects = {"cppcodegenvar": "doxyout/xml"}
+breathe_default_project = "cppcodegenvar"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -100,9 +114,14 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 import sphinx_rtd_theme
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
+# I don't know why this is necessary.
+html_context = {
+    'css_files': ['https://media.readthedocs.org/css/sphinx_rtd_theme.css'],
+}
 
 # -- Options for HTMLHelp output ------------------------------------------
 
